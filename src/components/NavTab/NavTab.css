@@ -1,0 +1,11 @@
+.navtab {
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .navtab {
+        height: 66px;
+    }
+}

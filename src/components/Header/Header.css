@@ -1,0 +1,220 @@
+.header{
+    width: 100%;
+    height: 74px;
+    padding: 0 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+
+    box-sizing: border-box;
+}
+
+.header_dark {
+    background-color: #073042;
+}
+
+.header__logo {
+    width: 38px;
+    height: 38px;
+}
+
+.header_register {
+    max-width: 396px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 70px 0 40px;
+    box-sizing: border-box;
+}
+
+.header__buttons-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;  
+}
+
+.header__button {
+    min-width: 76px;
+    height: 32px;
+    border: none;
+    border-radius: 3px;
+    margin: 0 0 0 30px;
+    padding: 0;
+
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    color: #000000;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header__button-title {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: right;
+}
+
+.header__button-title_selected {
+    font-weight: 500;
+}
+
+.header__button:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.header__button:active {
+    color: #FF3055;
+}
+
+.header__button_dark {
+    color: #FFFFFF;
+    background-color:  #073042;
+}
+
+.header__button_login {
+    background-color: #2BE080;
+}
+
+.header__button_light {
+    margin-left: 20px;
+    color: #000000;
+    background-color:  #FFFFFF;
+    border: none;
+}
+
+.header__button_light_selected 
+{
+    margin-left: 20px;
+    color: #000000;
+    background-color:  #a1a;
+    border: none;
+}
+
+.header__button_account {
+    margin-left: 50px;
+    padding: 7px 10px;
+    background-color: #FFFFFF;
+    
+    border: 2px solid #AAAAAA;
+    box-sizing: border-box;
+    border-radius: 50px;
+
+    display: flex;
+    align-items: center;
+    z-index: 0;
+}
+
+.header__button_account_dark {
+    border: 2px solid #F5F5F5;
+    border-radius: 20px;
+    background-color: #073042;
+}
+
+.header__button-title_account {
+    display: block;
+    color: #000000;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    box-sizing: border-box;
+}
+
+.header__button-title_account_dark {
+    color: #FFFFFF;
+}
+
+.button__icon {
+    margin-right: 7px;
+}
+
+.header__title {
+    margin: 0;
+    padding: 0 0 40px;
+    max-width: 396px;
+    width: 100%;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 29px;
+    color: #000000;
+}
+
+/* .burger {
+    display: none;
+} */
+
+.header__link {
+    
+}
+
+.header__link_active {
+
+}
+
+@media (max-width:768px) {
+    .header {
+        padding: 0 30px;
+    }
+
+    .header_register {
+        max-width: 396px;
+        width: 100%;
+        padding: 232px 0 40px;
+    }
+
+    .header__button_hidden {
+        display: none;
+    }
+    .header__buttons-container {
+      width: 100%;
+      max-width: 520px;
+      justify-content: end;
+  }
+}
+
+@media (max-width: 500px) {
+    .header {
+        min-width: 320px;
+        padding: 0px 14px;
+    }
+
+    .header__button {
+        min-width: 54px;
+        height: 26px;
+        margin: 0 0 0 14px;
+        font-size: 10px;
+    }
+  
+     .header_register {
+        max-width: 260px;
+        width: 100%;
+        /* height: 217px; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 56px 0 50px;
+    }
+    .header__title {
+        padding: 0 0 60px;
+        max-width: 260px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 320px) {
+    .header__buttons-container {
+      max-width: 320px;
+    }
+}
