@@ -1,6 +1,8 @@
 import React from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import './App.css';
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 import Main from '../Main/Main';
 import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
@@ -14,6 +16,7 @@ function App() {
   return (
     <div className="page">
       <div className="container">
+        <Header />
         <Switch>
           <Route exact path="/">
             <Main />
@@ -47,6 +50,7 @@ function App() {
             {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
           </Route>
         </Switch>
+        <Footer />
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import NavTab from '../NavTab/NavTab';
 function Promo() {
     return (
 
-        <div className="promo">
+        <section className="promo">
             <div className="promo__landing">
                 <div className="promo__landing-info">
                     <div className="promo__landing-title">
@@ -21,12 +21,9 @@ function Promo() {
                 <div className="promo__landing-info">
                     <div className="promo__landing-logo"></div>
                 </div>
-
-
             </div>
             <NavTab />
-
-        </div>
+        </section>
 
     );
 }

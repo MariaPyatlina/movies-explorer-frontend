@@ -8,10 +8,8 @@ import Footer from "../Footer/Footer";
 function Movies() {
     return (
         <>
-            <Header />
             <SearchBlock />
             <MoviesCardList />
-            <Footer />
         </>
     )
 }

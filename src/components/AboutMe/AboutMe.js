@@ -18,7 +18,7 @@ function AboutMe() {
                         После того, как прошла курс по веб-разработке, начала заниматься фриланс&#8209;заказами.
                     </p>
 
-                    <a className="about-me__github-link"
+                    <a className="about-me__github-link link"
                         href="https://github.com/MariaPyatlina"
                         target="_blank"
                         rel="noreferrer">

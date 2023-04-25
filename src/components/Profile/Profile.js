@@ -3,14 +3,24 @@ import { Link } from 'react-router-dom';
 import './Profile.css';
 import "../Register/Register.css";
 import "../AuthForm/AuthForm.css"
-import Header from "../Header/Header";
 
-const isEditMode = true;
+// const isEditMode = true;
 
 function Profile(props) {
+    const [isEditMode, setIsEditMode] = React.useState(false);
+    const [isError, setIsError] = React.useState(false);
+
+    function handleEditMode() {
+        setIsEditMode(true)
+    }
+
+    function handleSubmit() {
+        setIsEditMode(false)
+    }
+
+
     return (
         <>
-            <Header />
             <section className="profile">
                 <h2 className="profile__title">Привет, Мария {props.userName}</h2>
 
@@ -28,27 +38,40 @@ function Profile(props) {
                             {props.userEmail}
                         </input>
                     </lable>
-                </form>
-
-                {isEditMode ?
-                    (<>
-                        <span className="profile__error">
+                    {isEditMode && (<> {
+                        isError &&
+                        (<span className="profile__error">
                             {props.errMessage} При обновлении профиля произошла ошибка.
-                        </span>
-                        <button className="auth-from__submit-button auth-from__submit-button_profile auth-from__submit-button_disabled" type="submit" form="id_form__profile">
+                        </span>)
+                    }
+                        <button
+                            className={`auth-from__submit-button auth-from__submit-button_profile ${isError ? "auth-from__submit-button_disabled" : ""}`}
+                            type="submit"
+                            form="id_form__profile"
+                            onClick={handleSubmit}
+                            disabled={isError ? "disabled" : ""}
+                        >
                             Сохранить
                         </button>
                     </>
-                    ) :
+                    )}
+                </form>
+
+
+
+                {!isEditMode && (
                     (<>
-                        <button className="profile__link_edit" type="button">
+                        <button
+                            className="profile__link_edit"
+                            type="button"
+                            onClick={handleEditMode}
+                        >
                             Редактировать
                         </button>
                         <Link to="/" className="profile__link_exit">Выйти из аккаунта</Link>
                     </>
                     )
-                }
-
+                )}
             </section >
         </>
     );

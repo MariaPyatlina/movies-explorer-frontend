@@ -17,6 +17,11 @@
   border: none; 
 }
 
+.burger__menu-button:hover {
+  cursor: pointer;
+  opacity: 0.3;
+}
+
 .burger__menu-button_landing {
   background-color:  #073042;
   background-image: url(../../images/button-burger-white.svg);
@@ -94,21 +99,9 @@
 }
 
 .burger__menu-item:hover {
+  cursor: pointer;
   opacity: 0.3;
 }
-
-/* .burger__menu-item-link {
-  text-decoration: none;
-}
-
-.burger__menu-item-link:hover {
-    opacity: 0.7;
-}
-
-
-.burger__menu-item-link:visited {
-  color: #000000;
-} */
 
 .burger__account-button {
   min-width: 76px;

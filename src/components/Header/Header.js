@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import logo from '../../images/logo.svg';
 import accountIcon from '../../images/accountIcon.svg';
 import accountIconWhite from '../../images/accountIconWhite.svg';
@@ -17,7 +17,7 @@ function Header(props) {
         <>
             {location.pathname === "/" && (
                 <>
-                    <div className="header header_dark">
+                    <header className="header header_dark">
                         <Link to="/" className='link'>
                             <img className="header__logo"
                                 src={logo}
@@ -63,14 +63,14 @@ function Header(props) {
                             )
                             }
                         </div>
-                    </div>
+                    </header>
                 </>
             )
             }
 
             {(location.pathname === "/movies" || location.pathname === "/saved-movies" || location.pathname === "/profile") && (
                 <>
-                    <div className="header">
+                    <header className="header">
                         <Link to="/" className='link'>
                             <img className="header__logo"
                                 src={logo}
@@ -101,33 +101,21 @@ function Header(props) {
                                 </button>
                             </Link>
                         </div>
-                    </div>
+                    </header>
                 </>
             )
             }
 
             {(location.pathname === "/signin" || location.pathname === "/signup") && (
                 <>
-                    <div className="header_register">
+                    <header className="header_register">
                         <Link to="/" className='link'>
                             <img className="header__logo"
                                 src={logo}
                                 alt="Логотип"
                             />
                         </Link>
-                    </div>
-
-                    <Route path="/signup" className="link">
-                        <h1 className="header__title">
-                            Добро пожаловать!
-                        </h1>
-                    </Route>
-
-                    <Route path="/signin" className="link">
-                        <h1 className="header__title">
-                            Рады видеть!
-                        </h1>
-                    </Route>
+                    </header>
                 </>
             )}
         </>

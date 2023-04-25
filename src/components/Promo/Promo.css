@@ -126,6 +126,7 @@
     height: 304px;
     background-repeat: no-repeat;
     background-position: center;
+    background-size: contain;
     align-self: center;
     justify-self: start;
 }
@@ -184,7 +185,7 @@
     }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
     .promo {
         height: 710px;
     }
@@ -216,5 +217,12 @@
     
     .promo__button_more {
         margin: 80px auto 30px;
+    }
+}
+
+@media (max-width: 500px) {
+    .promo__landing-logo {
+        width: 210px;
+        height: 206px;
     }
 }

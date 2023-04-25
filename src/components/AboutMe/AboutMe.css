@@ -89,12 +89,13 @@
     font-size: 14px;
     line-height: 17px;
     text-decoration: none;
+    color: #000000
 }
 
-.about-me__github-link:hover {
+/* .about-me__github-link:hover {
     cursor: pointer;
     opacity: 0.3;
-}
+} */
 
 .about-me__photo {
     width: 270px;
