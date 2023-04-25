@@ -7,12 +7,12 @@ import NavTab from "../NavTab/NavTab";
 
 function Main() {
     return (
-        <main>
-            {/* <Promo />
-            <NavTab />*/}
+        <main className="content">
+            <Promo />
+            <NavTab />
             <AboutProject />
             <Techs />
-            {/*<AboutMe /> */}
+            <AboutMe />
         </main>
     );
 }

@@ -22,7 +22,7 @@ function Promo() {
                     <div className="promo__landing-logo"></div>
                 </div>
             </div>
-            <NavTab />
+            {/* <NavTab /> */}
         </section>
 
     );
