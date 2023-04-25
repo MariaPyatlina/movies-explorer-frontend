@@ -210,15 +210,7 @@
     .profile__form {
         /* margin-bottom: 379px; */
         padding: 80px 0 0;
-
-            /* padding: 123px 0 0; */
-            width: 260px;
-            /* height: 315px; */
-            /* display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;  */
-
+        width: 260px;
     }
 
     .profile__lable {

@@ -130,7 +130,8 @@
         padding: 70px 18px;
         justify-content: center;
     }
-        .techs__title {
+    .techs__title {
+        /* max-width: 292px; */
         font-size: 18px;
         line-height: 22px;
     }
@@ -150,7 +151,7 @@
     }
 
     .techs__list {
-        padding: 50px 71px 0 ;
+        padding: 50px 0 0 ;
         grid-template-columns: repeat(2, minmax(84px, 1fr));
         max-width: calc(100% - 2 * 18px);
     }

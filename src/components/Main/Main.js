@@ -9,8 +9,8 @@ function Main() {
     return (
         <main>
             {/* <Promo />
-            <NavTab />
-            <AboutProject />*/}
+            <NavTab />*/}
+            <AboutProject />
             <Techs />
             {/*<AboutMe /> */}
         </main>
