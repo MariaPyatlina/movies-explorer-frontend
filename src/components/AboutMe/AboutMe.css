@@ -1,0 +1,187 @@
+.about-me {
+    width: 100%;
+    /* max-width: 1280px; */
+    min-height: 1079px;
+    padding: 110px 70px 0;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.about-me__title {
+    margin: 0;
+    padding: 0;
+    padding-bottom: 23px;
+    display: block;
+
+    width: 100%;
+    height: 27px;
+    border-bottom: 1px solid #000000;
+    
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 27px;
+    letter-spacing: -0.04em;
+    text-align: start;
+    align-self: flex-start;
+}
+
+.about-me__container {
+    width: 100%;
+    padding-top: 66px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.about-me__info {
+    width: 100%;
+    max-width: 600px;
+    min-height:  327px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.about-me__title-name {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-weight: 400;
+    font-size: 50px;
+    line-height: 58px;
+    letter-spacing: -0.04em;
+}
+
+.about-me__subtitle-job {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 18px 0 0 0;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 20px;
+}
+
+.about-me__subtitle-resume {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 26px 0 0 0;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+    mix-blend-mode: normal;
+}
+
+.about-me__github-link {
+    margin: 0;
+    padding: 99px 0 0;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    text-decoration: none;
+    color: #000000
+}
+
+/* .about-me__github-link:hover {
+    cursor: pointer;
+    opacity: 0.3;
+} */
+
+.about-me__photo {
+    width: 270px;
+    height: 327px;
+    background-image: url('../../images/me-photo.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    border-radius: 10px;
+    margin-left: 50px;
+} 
+
+@media (max-width: 1060px) {
+    .about-me__info {
+        max-width: 364px;
+    }
+}
+
+@media (max-width: 822px) {
+    .about-me {
+        /* min-height: 994px; */
+        padding: 90px 50px 0;
+    }  
+    .about-me__info {
+        max-width: 364px;
+        min-height:  108px;
+    }
+    
+    .about-me__title-name {
+        font-size: 40px;
+        line-height: 40px;
+    }
+    .about-me__subtitle-job {
+        padding: 20px 0 0 0;       
+        font-size: 12px;
+        line-height: 18px;
+    }
+    .about-me__subtitle-resume {
+        padding: 20px 0 0 0;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 18px;
+    }
+    .about-me__github-link {
+        padding: 87px 0 0;
+    }
+    .about-me__photo {
+        width: 255px;
+        height: 307px;
+    } 
+}
+
+@media (max-width: 768px) {
+    /* .about-me {
+        padding: 90px 50px 0;
+    } */
+
+    .about-me__container {
+        width: 100%;
+        padding-top: 60px;
+        box-sizing: border-box;
+    
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    .about-me__info {
+        width: 100%;
+        max-width: 292px;
+        padding: 40px 0 0;
+        align-self: center;
+    }
+    .about-me__github-link {
+        padding: 40px 0 0;
+    }
+    .about-me__photo {
+        width: 292px;
+        height: 352px;
+        margin: 0;
+    } 
+}
+
+@media (max-width: 400px) {
+    .about-me {
+        padding: 70px 14px 0;
+    }
+}
