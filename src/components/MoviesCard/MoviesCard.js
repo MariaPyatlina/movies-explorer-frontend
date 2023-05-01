@@ -13,12 +13,24 @@ function MoviesCard(props) {
 
     function handleRemoveClick() { }
 
+    function defineEnding(movieDuration) { // определяет окончание для длительности фильма
+        let ending = '';
+        const lastNumber = String(movieDuration).slice(-1); // приводит длительностьфильма к строке и забирает последний символ
+
+        if (lastNumber === '1') { return ending = 'а' };
+        if (lastNumber === '2' || lastNumber === '3' || lastNumber === '4') { return ending = 'ы' };
+
+        return ending;
+    }
+
     return (
         <>
             <div className="movies-card">
                 <div className="movies-card__title">
                     <h2 className="movies-card__header">{props.movie.nameRU}</h2>
-                    <p className="movies-card__duration">{props.movie.duration} минут</p>
+                    <p className="movies-card__duration">
+                        {props.movie.duration} минут{defineEnding(props.movie.duration)}
+                    </p>
                 </div>
                 <img className="movies-card__image" src={`${EXTERNAL_API_URL}${props.movie.image.url}`} alt={props.movie.nameRU} />
 
