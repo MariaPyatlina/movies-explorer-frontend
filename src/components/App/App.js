@@ -10,9 +10,28 @@ import Profile from '../Profile/Profile';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
+
+import moviesApi from '../../utils/MoviesApi';
 const isLoggedIn = true;
 
 function App() {
+  const [isLoading, setIsLoading] = React.useState(false); // Чтобы показывать прелоадер на время загрузки
+  const [movies, setMovies] = React.useState([]); //Карточек нет
+
+  //Получает все фильмы со стороннего сервиса
+
+  const handleSearchMovies = () => {
+    console.log('вызвали функцию handleSearchMovies');
+
+    moviesApi.getMoviesCards()
+      .then((moviesData) => {
+        console.log(moviesData);
+        setMovies(moviesData);
+      })
+      .then(() => { console.log('поиск фильмов выполнен'); })
+  }
+
+
   return (
     <div className="page">
       <div className="container">
@@ -23,7 +42,10 @@ function App() {
           </Route>
 
           <Route path="/movies">
-            <Movies />
+            <Movies
+              onSearchMovies={handleSearchMovies}
+              movies={movies} // передаем фильмы из переменной состояния
+            />
           </Route>
 
           <Route path="/saved-movies">
