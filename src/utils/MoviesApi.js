@@ -1,31 +1,17 @@
-export const configMoviesApi = {
-    baseUrl: ' https://api.nomoreparties.co',
-    headers: { 'Content-Type': 'application/json' },
+import { EXTERNAL_API_URL } from './constants';
+
+const getMoviesCards = () => {
+    return fetch(`${EXTERNAL_API_URL}/beatfilm-movies`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    }) //В ответ придет массив с объектами фильмов
+        .then(res => {
+            if (res.ok) {
+                console.log('1');
+                return res.json();
+            }
+            else Promise.reject(`Ошибка ${res.status}`);
+        })
 }
 
-class Api {
-    constructor(options) {
-        this._baseUrl = options.baseUrl;
-        this._headers = options.headers;
-    }
-
-
-
-    getMoviesCards() {
-        return fetch(`${this._baseUrl}/beatfilm-movies`, {
-            method: 'GET',
-            headers: this._headers,
-        }) //В ответ придет массив с объектами фильмов
-            .then(res => {
-                if (res.ok) {
-                    return res.json();
-                }
-                else Promise.reject(`Ошибка ${res.status}`);
-            })
-    }
-
-}
-
-const moviesApi = new Api(configMoviesApi);
-
-export default moviesApi;
+export default getMoviesCards;

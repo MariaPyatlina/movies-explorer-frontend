@@ -10,25 +10,39 @@ import Profile from '../Profile/Profile';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
+import Preloader from '../Preloader/Preloader'
 
-import moviesApi from '../../utils/MoviesApi';
+
+import getMoviesCards from '../../utils/MoviesApi';
+
 const isLoggedIn = true;
 
 function App() {
   const [isLoading, setIsLoading] = React.useState(false); // Чтобы показывать прелоадер на время загрузки
   const [movies, setMovies] = React.useState([]); //Карточек нет
 
-  //Получает все фильмы со стороннего сервиса
 
+  //Получает все фильмы со стороннего сервиса
   const handleSearchMovies = () => {
     console.log('вызвали функцию handleSearchMovies');
-
-    moviesApi.getMoviesCards()
+    setIsLoading(true);
+    // Получили все карточки с сервера
+    getMoviesCards()
       .then((moviesData) => {
         console.log(moviesData);
         setMovies(moviesData);
+        // Сохранили в localStorage
+        localStorage.setItem('localMovies', JSON.stringify(moviesData));
+        // console.log('localMovies', localMovies);
       })
       .then(() => { console.log('поиск фильмов выполнен'); })
+      .catch(err => { console.log(err.message) })
+      .finally(() => setIsLoading(false));
+
+    // Сортируем карточки в соответствии с запросом
+    // const localMoviesArray = JSON.parse(localStorage.getItem('localMovies'));
+    // console.log('localMoviesArray', localMoviesArray);
+
   }
 
 
@@ -36,42 +50,45 @@ function App() {
     <div className="page">
       <div className="container">
         <Header />
-        <Switch>
-          <Route exact path="/">
-            <Main />
-          </Route>
+        {isLoading ? <Preloader /> :
+          <Switch>
+            <Route exact path="/">
+              <Main />
+            </Route>
 
-          <Route path="/movies">
-            <Movies
-              onSearchMovies={handleSearchMovies}
-              movies={movies} // передаем фильмы из переменной состояния
-            />
-          </Route>
+            <Route path="/movies">
+              <Movies
+                onSearchMovies={handleSearchMovies}
+                movies={movies} // передаем фильмы из переменной состояния
+              />
+            </Route>
 
-          <Route path="/saved-movies">
-            <SavedMovies />
-          </Route>
+            <Route path="/saved-movies">
+              <SavedMovies />
+            </Route>
 
-          <Route path="/profile">
-            <Profile />
-          </Route>
+            <Route path="/profile">
+              <Profile />
+            </Route>
 
-          <Route path="/signin">
-            <Login />
-          </Route>
+            <Route path="/signin">
+              <Login />
+            </Route>
 
-          <Route path="/signup">
-            <Register />
-          </Route>
+            <Route path="/signup">
+              <Register />
+            </Route>
 
-          <Route path="/notfound">
-            <NotFoundPage />
-          </Route>
+            <Route path="/notfound">
+              <NotFoundPage />
+            </Route>
 
-          <Route path="*">
-            {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
-          </Route>
-        </Switch>
+            <Route path="*">
+              {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
+            </Route>
+          </Switch>
+        }
+
         <Footer />
       </div>
     </div>

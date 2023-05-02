@@ -1,7 +1,7 @@
 import React from "react";
 import { Route } from 'react-router-dom';
 import './MoviesCard.css';
-import EXTERNAL_API_URL from '../../utils/constants';
+import { EXTERNAL_API_URL } from '../../utils/constants';
 
 function MoviesCard(props) {
 
@@ -15,11 +15,9 @@ function MoviesCard(props) {
 
     function defineEnding(movieDuration) { // определяет окончание для длительности фильма
         let ending = '';
-        const lastNumber = String(movieDuration).slice(-1); // приводит длительностьфильма к строке и забирает последний символ
-
+        const lastNumber = String(movieDuration).slice(-1); // приводит длительность фильма к строке и забирает последний символ
         if (lastNumber === '1') { return ending = 'а' };
         if (lastNumber === '2' || lastNumber === '3' || lastNumber === '4') { return ending = 'ы' };
-
         return ending;
     }
 
@@ -32,7 +30,9 @@ function MoviesCard(props) {
                         {props.movie.duration} минут{defineEnding(props.movie.duration)}
                     </p>
                 </div>
-                <img className="movies-card__image" src={`${EXTERNAL_API_URL}${props.movie.image.url}`} alt={props.movie.nameRU} />
+                <a href={props.movie.trailerLink} target="_blank" rel="noreferrer">
+                    <img className="movies-card__image" src={`${EXTERNAL_API_URL}${props.movie.image.url}`} alt={props.movie.nameRU} />
+                </a>
 
                 <div className="movies-card__action-button">
                     <Route path="/movies">

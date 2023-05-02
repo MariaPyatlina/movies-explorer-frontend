@@ -10,9 +10,16 @@ function Movies(props) {
     return (
         <>
             <SearchBlock onSearchMovies={props.onSearchMovies} />
-            <MoviesCardList movies={props.movies} />
-            <></>
+            {(props.movies === []) ?
+                <></> :
+                <MoviesCardList movies={props.movies} />
+            }
+
+            {/* <div className={`movies-cards__list-empty ${props.movies ? "" : "movies-cards__list-empty_hidden"}`}>Ничего не найдено</div>
+            <button className={`movies-cards__button-more ${props.movies ? "movies-cards__button-more_hidden" : ""}`} type="button">Ещё</button> */}
+
         </>
+
     )
 }
 

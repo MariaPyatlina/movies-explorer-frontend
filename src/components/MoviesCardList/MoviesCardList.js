@@ -3,6 +3,7 @@ import MoviesCard from '../MoviesCard/MoviesCard';
 import './MoviesCardList.css';
 
 function MoviesCardList(props) {
+
     return (
         <>
             <section className="movies-cards">
@@ -15,10 +16,10 @@ function MoviesCardList(props) {
                         )
                     })}
 
-                    {/* Ничего не найдено */}
-                </div>
 
-                <button className="movies-cards__button-more" type="button">Ещё</button>
+                </div>
+                <div className={`movies-cards__list-empty ${props.movies ? "" : "movies-cards__list-empty_hidden"}`}>Ничего не найдено</div>
+                <button className={`movies-cards__button-more ${props.movies ? "movies-cards__button-more_hidden" : ""}`} type="button">Ещё</button>
 
             </section>
         </>
