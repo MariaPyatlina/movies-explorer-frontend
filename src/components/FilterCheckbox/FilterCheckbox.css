@@ -34,7 +34,7 @@
     width: 36px; 
     height: 20px; 
     border-radius: 20px;
-    background-color: #2BE080;
+    background-color: #EBEBEB;
     
     margin-right: 40px;
     padding: 0;
@@ -54,16 +54,16 @@
     height: 8px;
     width: 8px;
     border-radius: 50%;
-    background-color: #ffffff;
+    background-color: #F5F5F5;
     transition: background-color, 0.5s;
 }
 
 .filter__checkbox:checked + .filter__switcher::before {
-    background-color: #EBEBEB;
+    background-color: #2BE080;
 }
 
 .filter__checkbox:checked + .filter__switcher::after {
-    background-color: #F5F5F5;
+    background-color: #ffffff;
     left: 24px;
 }
 

@@ -7,7 +7,7 @@
         "image"
         "button";
 
-    justify-items: start;
+    /* justify-items: start; */
     align-items: start;
 
     background: #FDFDFD;

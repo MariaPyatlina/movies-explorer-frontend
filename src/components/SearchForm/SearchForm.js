@@ -1,53 +1,50 @@
 import './SearchForm.css';
-import MoviesCard from '../MoviesCard/MoviesCard';
 import React from 'react';
 
 function SearchForm(props) {
-    const [query, setQuery] = React.useState(''); // исходно запрос пустой
+  const [searchQuery, setSearchQuery] = React.useState(''); // исходно запрос пустой
 
-    // React.useEffect(() => {
+  const handleSearchQueryChange = (evt) => {
+    setSearchQuery(evt.target.value);
+  }
 
-    // })
+  const handleSearchSubmit = (evt) => {
+    evt.preventDefault();
+    console.log('searchQuery', searchQuery);
+    console.log('Нажали Найти');
 
-    const handleQueryChange = (e) => {
-        setQuery(e.target.value);
-        console.log('query', query);
-    }
+    props.onSearchSubmit({
+      searchWord: searchQuery,
+    });
+  }
 
+  return (
+    <>
+      <form className="search-form" id="search-form" onSubmit={handleSearchSubmit}>
+        <label className="search-form__input-form">
+          <input
+            value={searchQuery}
+            className='search-form__input'
+            id="search-movie-input"
+            name="search-movie-query"
+            type="text"
+            placeholder='Фильм'
+            minLength="1"
+            onChange={handleSearchQueryChange}
+          >
+          </input>
+        </label>
+        <button
+          className="search-form__button"
+          type="submit"
+        >
+          Найти
+        </button>
+      </form>
 
-    const handleClick = (e) => {
-        e.preventDefault();
-        props.onSearchMovies(query);
-    }
+    </>
 
-    return (
-        <>
-            <form className="search-form" id="search-form">
-                <label className="search-form__input-form">
-                    <input
-                        value={query}
-                        className='search-form__input'
-                        id="search-movie-input"
-                        name="search-movie-query"
-                        type="text"
-                        placeholder='Фильм'
-                        minLength="3"
-                        onChange={handleQueryChange}
-                    >
-                    </input>
-                </label>
-                <button
-                    className="search-form__button"
-                    type="submit"
-                    onClick={handleClick}
-                >
-                    Найти
-                </button>
-            </form>
-
-        </>
-
-    )
+  )
 }
 
 export default SearchForm;
