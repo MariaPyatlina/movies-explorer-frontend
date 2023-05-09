@@ -115,6 +115,19 @@ function App() {
   }
 
 
+  function handleUpdateUserDate({ email, name }) {
+    setIsLoading(true);
+    mainApi.setUserData({ email, name })
+      .then((data) => {
+        console.log('ata', data);
+        setCurrentUser(data)
+      }).catch(err => {
+        setIsLoading(false);
+        console.log(`Ошибка ${err}`)
+      })
+      .finally(() => setIsLoading(false))
+  }
+
 
 
 
@@ -270,7 +283,7 @@ function App() {
               </Route>
 
               <Route path="/profile">
-                <Profile onExit={handleExit} />
+                <Profile onExit={handleExit} onProfileUpdate={handleUpdateUserDate} />
               </Route>
 
               <Route path="/signin">

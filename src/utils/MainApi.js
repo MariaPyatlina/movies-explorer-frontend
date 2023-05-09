@@ -90,13 +90,13 @@ class Api {
   }
 
   //Отправляет новые данные профиля
-  setUserData({ newUserName, newUserEmail }) {
+  setUserData({ name, email }) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       headers: this._headers,
       body: JSON.stringify({
-        name: newUserName,
-        email: newUserEmail
+        name,
+        email,
       })
     }) //В ответ придет объект с обновленными данными пользователя
       .then(res => this._parseAnswer(res))
