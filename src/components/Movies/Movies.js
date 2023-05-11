@@ -2,23 +2,20 @@ import React from "react";
 import './Movies';
 import SearchBlock from '../SearchBlock/SearchBlock';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
-import Preloader from '../Preloader/Preloader';
-import getMoviesCards from '../../utils/moviesApi';
-
 
 function Movies(props) {
 
   return (
     <>
       <SearchBlock
-        onChange={props.onChange}
+        // onChange={props.onChange}
+        moviesQuery={props.moviesQuery}
         onSearchSubmit={props.onSearchSubmit}
         // onShortFilmFilter={props.onShortFilmFilter}
-        moviesQuery={props.moviesQuery}
+
         moviesCheckboxState={props.moviesCheckboxState}
         onCheckboxClick={props.onCheckboxClick}
       />
-
 
       <MoviesCardList
         movies={props.movies}
@@ -26,7 +23,6 @@ function Movies(props) {
         onAddMovie={props.onAddMovie}
         onRemoveMovie={props.onRemoveMovie}
         onRemoveSavedMovie={props.onRemoveSavedMovie}
-      // isMovieSaved={props.isMovieSaved}
       />
 
       {/* <div className={`movies-cards__list-empty ${props.movies ? "" : "movies-cards__list-empty_hidden"}`}>Ничего не найдено</div>

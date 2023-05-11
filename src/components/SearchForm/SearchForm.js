@@ -1,7 +1,9 @@
 import './SearchForm.css';
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 
 function SearchForm(props) {
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = React.useState(props.moviesQuery); // исходно запрос пустой
 
   console.log('props.moviesCheckboxState в форме поиска', props.moviesCheckboxState);
@@ -18,9 +20,19 @@ function SearchForm(props) {
     props.onSearchSubmit(searchQuery, props.moviesCheckboxState);
   }
 
+  const handleLocalSeachSubmit = (evt) => {
+    evt.preventDefault();
+    console.log('localSearchSubmit', searchQuery, props.moviesCheckboxState);
+    props.onSearchSubmit(searchQuery, props.moviesCheckboxState);
+  }
+
   return (
     <>
-      <form className="search-form" id="search-form" onSubmit={handleSearchSubmit}>
+      <form
+        className="search-form"
+        id="search-form"
+        onSubmit={location.pathname === "/movies" ? handleSearchSubmit : handleLocalSeachSubmit}
+      >
         <label className="search-form__input-form">
           <input
             value={searchQuery}

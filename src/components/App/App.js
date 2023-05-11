@@ -17,6 +17,7 @@ import getMoviesCards from '../../utils/moviesApi';
 import mainApi from '../../utils/mainApi';
 
 import CurrentUserContext from '../../contexts/CurrentUserContext.js';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute.js';
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
   const [moviesLocal, setMoviesLocal] = React.useState([]); // Сохраненные карточеки в seesionStorage
   const [fiteredMovies, setFileredMovies] = React.useState([]); //Массив отфильтрованных фильмов
   const [savedMovies, setSavedMovies] = React.useState([]); // Фильмы. которые сохранил себе пользователь
+  const [filteredSavedMovies, setfilteredSavedMovies] = React.useState([]); // Фильмы. которые сохранил себе пользователь
 
   const [isLoading, setIsLoading] = React.useState(false); // Чтобы показывать прелоадер на время загрузки
   const [shotMoviesOn, isShotMoviesOn] = React.useState(false);  //
@@ -180,7 +182,7 @@ function App() {
     }
   }
 
-
+  // Поиск по всем фильмам
   const filterMoviesBySearchQueryAndCheckboxState = (moviesArray, searchQuery, checkboxState) => {
     console.log('фильтрую. Начальные данные', moviesArray, searchQuery, checkboxState);
 
@@ -199,6 +201,29 @@ function App() {
     }
     else {
       return setFileredMovies(filteredByQuery);
+    }
+  }
+
+  //Поиск по сохраненным фильмам
+  const handleLocalSearch = (searchQuery, checkboxState) => {
+    const currentSavedMovie = JSON.parse(sessionStorage.getItem('localSavedMovies'));
+    console.log('фильтрую. Сохраненные данные данные', currentSavedMovie, searchQuery, checkboxState);
+
+
+    let filteredByQuery = currentSavedMovie.filter((film) => {
+      return film.nameRU.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        film.nameEN.toLowerCase().includes(searchQuery.toLowerCase())
+    })
+
+    if (checkboxState) {
+      let filteredMoviesByDuration = filteredByQuery.filter((film) => {
+        return film.duration <= 40;
+      })
+
+      return setfilteredSavedMovies(filteredMoviesByDuration);
+    }
+    else {
+      return setfilteredSavedMovies(filteredByQuery);
     }
   }
 
@@ -262,7 +287,7 @@ function App() {
                 <Main />
               </Route>
 
-              <Route path="/movies">
+              <ProtectedRoute path="/movies">
                 <Movies
                   movies={fiteredMovies}
                   savedMovies={savedMovies} // Массив сохраненных фильмов
@@ -276,18 +301,23 @@ function App() {
                   moviesCheckboxState={moviesCheckboxState}
                   onCheckboxClick={handleCheckboxClick}
                 />
-              </Route>
+              </ProtectedRoute>
 
-              <Route path="/saved-movies">
+              <ProtectedRoute path="/saved-movies">
                 <SavedMovies
-                  savedMovies={savedMovies}
-                  onRemoveSavedMovie={handleRemoveSavedMovie}
-                />
-              </Route>
+                  savedMovies={filteredSavedMovies}  // Отфильтрованые Сохраненные фильмы
+                  onRemoveSavedMovie={handleRemoveSavedMovie} // удаление из избранного
 
-              <Route path="/profile">
+                  moviesQuery={moviesQuery} // поисковый запрос
+                  onSearchSubmit={handleLocalSearch} // действие по кнопке Сабмит
+                  moviesCheckboxState={moviesCheckboxState} // состояние чекбокса
+                  onCheckboxClick={handleCheckboxClick} // клик по чекбоксу
+                />
+              </ProtectedRoute>
+
+              <ProtectedRoute path="/profile">
                 <Profile onExit={handleExit} onProfileUpdate={handleUpdateUserData} errorFromBack={errorFromBack} />
-              </Route>
+              </ProtectedRoute>
 
               <Route path="/signin">
                 <Login onLogin={handleLogin} errorFromBack={errorFromBack} />

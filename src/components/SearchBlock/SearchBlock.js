@@ -9,7 +9,7 @@ function SearchBlock(props) {
     <section className="search-block">
       <SearchForm
         value={props.searchQuery}
-        onChange={props.onChange}
+        // onChange={props.onChange}
         onSearchSubmit={props.onSearchSubmit}
         moviesQuery={props.moviesQuery}
         moviesCheckboxState={props.moviesCheckboxState}

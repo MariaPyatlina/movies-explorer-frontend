@@ -5,8 +5,17 @@ import './SavedMovies.css';
 function SavedMovies(props) {
   return (
     <>
-      <SearchBlock />
-      <MoviesCardList savedMovies={props.savedMovies} onRemoveSavedMovie={props.onRemoveSavedMovie} />
+      <SearchBlock
+        moviesQuery={props.moviesQuery}
+        // onChange={props.onChange}
+        onSearchSubmit={props.onSearchSubmit}
+        moviesCheckboxState={props.moviesCheckboxState}
+        onCheckboxClick={props.onCheckboxClick}
+      />
+      <MoviesCardList
+        savedMovies={props.savedMovies}
+        onRemoveSavedMovie={props.onRemoveSavedMovie}
+      />
     </>
   );
 }
