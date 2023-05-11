@@ -13,7 +13,10 @@ function Movies(props) {
       <SearchBlock
         onChange={props.onChange}
         onSearchSubmit={props.onSearchSubmit}
-        onShortFilmFilter={props.onShortFilmFilter}
+        // onShortFilmFilter={props.onShortFilmFilter}
+        moviesQuery={props.moviesQuery}
+        moviesCheckboxState={props.moviesCheckboxState}
+        onCheckboxClick={props.onCheckboxClick}
       />
 
 

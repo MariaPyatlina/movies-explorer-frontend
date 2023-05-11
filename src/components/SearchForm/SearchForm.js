@@ -2,7 +2,9 @@ import './SearchForm.css';
 import React from 'react';
 
 function SearchForm(props) {
-  const [searchQuery, setSearchQuery] = React.useState(''); // исходно запрос пустой
+  const [searchQuery, setSearchQuery] = React.useState(props.moviesQuery); // исходно запрос пустой
+
+  console.log('props.moviesCheckboxState в форме поиска', props.moviesCheckboxState);
 
   const handleSearchQueryChange = (evt) => {
     setSearchQuery(evt.target.value);
@@ -13,9 +15,7 @@ function SearchForm(props) {
     console.log('searchQuery', searchQuery);
     console.log('Нажали Найти');
 
-    props.onSearchSubmit({
-      searchWord: searchQuery,
-    });
+    props.onSearchSubmit(searchQuery, props.moviesCheckboxState);
   }
 
   return (
