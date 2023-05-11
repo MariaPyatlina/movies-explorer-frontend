@@ -22,6 +22,7 @@ function Movies(props) {
         savedMovies={props.savedMovies}
         onAddMovie={props.onAddMovie}
         onRemoveMovie={props.onRemoveMovie}
+        onRemoveSavedMovie={props.onRemoveSavedMovie}
       // isMovieSaved={props.isMovieSaved}
       />
 

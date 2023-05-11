@@ -7,18 +7,17 @@ function MoviesCard(props) {
   const location = useLocation();
 
 
-  console.log('savedMovies qq', props.savedMovies);
-
   // const [isMovieSaved, setIsMovieSaved] = React.useState(false);
 
   // Добавлена ли карточка в сохранённые ?
-  const isMovieSaved = props.savedMovies.some(savedMovie => savedMovie.nameRU === props.movie.nameRU);
+  const isMovieSaved = props.savedMovies.some(movie => movie.movieId === props.movie.id);
 
+  // console.log('isMovieSaved', isMovieSaved);
 
   function handleAddMovie(evt) {
     evt.preventDefault();
     console.log('savedMovies handleAddMovie', props.savedMovies, props.movie);
-    const isMovieAlradySaved = props.savedMovies.find(savedMovie => savedMovie.nameRU === props.movie.nameRU);
+    const isMovieAlradySaved = props.savedMovies.find(savedMovie => savedMovie.movieId === props.movie.id);
 
     if (isMovieAlradySaved === undefined) {
       props.onAddMovie(props.movie);
@@ -29,6 +28,12 @@ function MoviesCard(props) {
   function handleRemoveMovie(evt) {
     evt.preventDefault();
     props.onRemoveMovie(props.movie);
+    // setIsMovieSaved(false);
+  }
+
+  function handleRemoveSavedMovie(evt) {
+    evt.preventDefault();
+    props.onRemoveSavedMovie(props.movie);
     // setIsMovieSaved(false);
   }
 
@@ -64,9 +69,9 @@ function MoviesCard(props) {
         <div className="movies-card__action-button">
           {(location.pathname === "/movies") &&
             <button
-              className={`movies-card__button ${!props.isMovieSaved ? "movies-card__button_save" : "movies-card__button_saved"}`}
+              className={`movies-card__button ${isMovieSaved ? "movies-card__button_saved" : "movies-card__button_save"}`}
               type="button"
-              onClick={!props.isMovieSaved ? handleAddMovie : handleRemoveMovie}
+              onClick={isMovieSaved ? handleRemoveMovie : handleAddMovie}
             ></button>
           }
 
@@ -75,7 +80,7 @@ function MoviesCard(props) {
             <button
               className="movies-card__button movies-card__button_remove"
               type="button"
-              onClick={handleRemoveMovie}
+              onClick={handleRemoveSavedMovie}
             >
             </button>
           }

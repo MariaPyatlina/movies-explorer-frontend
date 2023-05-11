@@ -35,7 +35,8 @@ function MoviesCardList(props) {
                         key={movie._id}
                         movie={movie}
                         savedMovies={props.savedMovies}
-                        onRemoveMovie={props.onRemoveMovie}
+                        onRemoveSavedMovie={props.onRemoveSavedMovie}
+
                       />
                     )
                   })

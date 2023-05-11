@@ -247,6 +247,23 @@ function App() {
   }
 
   // Удаляет фильм с сервера
+  const handleRemovedMovie = (movie) => {
+    console.log('вызвали функцию handleRemoveMovie', movie.id); // id = 2
+
+    const savedMovieForDelete = savedMovies.find(savedMovie => savedMovie.movieId === movie.id);
+
+    setIsLoading(true);
+    mainApi.removeMovie(savedMovieForDelete._id)
+      .then(() => {
+        setSavedMovies(savedMovies => savedMovies.filter(film => film._id !== savedMovieForDelete._id))
+      })
+      .catch(err => {
+        console.log(err.message)
+      })
+      .finally(() => setIsLoading(false));
+  }
+
+  // Удаляет фильм из сохраненных
   const handleRemoveSavedMovie = (movie) => {
     console.log('вызвали функцию handleRemoveMovie', movie._id);
     setIsLoading(true);
@@ -259,6 +276,8 @@ function App() {
       })
       .finally(() => setIsLoading(false));
   }
+
+
 
   // Получает список сохраненных фильмов
   // const handleGetSavedMovies = () => {
@@ -293,11 +312,12 @@ function App() {
               <Route path="/movies">
                 <Movies
                   movies={fiteredMovies}
-                  savedMovies={savedMovies}
+                  savedMovies={savedMovies} // Массив сохраненных фильмов
+                  isMovieSaved={isMovieSaved}
                   onSearchSubmit={handleSearchMovies}
                   onShortFilmFilter={handleCheckboxState}
                   onAddMovie={handleAddMovieToSave}
-                  onRemoveMovie={handleRemoveSavedMovie}
+                  onRemoveMovie={handleRemovedMovie}
                 // onChange={handleChange}
                 />
               </Route>
@@ -305,7 +325,7 @@ function App() {
               <Route path="/saved-movies">
                 <SavedMovies
                   savedMovies={savedMovies}
-                  onRemoveMovie={handleRemoveSavedMovie}
+                  onRemoveSavedMovie={handleRemoveSavedMovie}
                 />
               </Route>
 

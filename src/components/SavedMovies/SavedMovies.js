@@ -6,7 +6,7 @@ function SavedMovies(props) {
   return (
     <>
       <SearchBlock />
-      <MoviesCardList savedMovies={props.savedMovies} onRemoveMovie={props.onRemoveMovie} />
+      <MoviesCardList savedMovies={props.savedMovies} onRemoveSavedMovie={props.onRemoveSavedMovie} />
     </>
   );
 }
