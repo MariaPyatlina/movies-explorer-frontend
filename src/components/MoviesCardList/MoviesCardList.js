@@ -17,6 +17,7 @@ function MoviesCardList(props) {
                   <MoviesCard
                     key={movie.id}
                     movie={movie}
+                    savedMovies={props.savedMovies}
                     onAddMovie={props.onAddMovie}
                     onRemoveMovie={props.onRemoveMovie}
                   // isMovieSaved={props.isMovieSaved}
@@ -26,16 +27,33 @@ function MoviesCardList(props) {
               }
             </> :
             <>
-              Здесь будут сохраненные фильмы
+              {props.savedMovies.length === 0 ? "у вас пока нет сохранённых фильмов" :
+                <>
+                  {props.savedMovies.map((movie) => { //Выводит сохраненые фильмы
+                    return (
+                      <MoviesCard
+                        key={movie._id}
+                        movie={movie}
+                        savedMovies={props.savedMovies}
+                        onRemoveMovie={props.onRemoveMovie}
+                      />
+                    )
+                  })
+                  }
+                </>
+              }
+
             </>
 
           }
 
-
-
         </div>
         <div className={`movies-cards__list-empty ${props.movies ? "" : "movies-cards__list-empty_hidden"}`}>Ничего не найдено</div>
-        <button className={`movies-cards__button-more ${props.movies ? "movies-cards__button-more_hidden" : ""}`} type="button">Ещё</button>
+        {location.pathname === '/movies' ?
+          <button className={`movies-cards__button-more ${props.movies ? "movies-cards__button-more_hidden" : ""}`} type="button">Ещё</button>
+          :
+          <></>
+        }
 
       </section>
     </>

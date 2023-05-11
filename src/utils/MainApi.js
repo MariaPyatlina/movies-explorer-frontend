@@ -60,7 +60,7 @@ class Api {
   }
 
   // Получает все сохраненные карточки
-  getAllSavedMovies({ }) {
+  getAllSavedMovies() {
     return fetch(`${this._baseUrl}/movies`, {
       method: 'GET',
       headers: this._headers,

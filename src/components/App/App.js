@@ -26,17 +26,37 @@ function App() {
   const [movies, setMovies] = React.useState([]); // Карточки загруженные с сервера
   const [moviesLocal, setMoviesLocal] = React.useState([]); // Сохраненные карточеки в seesionStorage
   const [fiteredMovies, setFileredMovies] = React.useState([]); //Массив отфильтрованных фильмов
-  const [savedMovies, setSavedMovies] = React.useState([]);
+  const [savedMovies, setSavedMovies] = React.useState([]); // Фильмы. которые сохранил себе пользователь
 
   const [isLoading, setIsLoading] = React.useState(false); // Чтобы показывать прелоадер на время загрузки
-  // const [searchQuery, setSearchQuery] = React.useState(''); // исходно запрос пустой
-  const [shotMoviesOn, isShotMoviesOn] = React.useState(false);
+  const [shotMoviesOn, isShotMoviesOn] = React.useState(false);  //
+  const [isMovieSaved, setIsMovieSaved] = React.useState(false);
 
   // Регистрация и авторизация
-  const [signinState, setSigninState] = React.useState(false); // ??
   const [isLoggedIn, setIsLoggedIn] = React.useState(false); // Авторизован
 
   const history = useHistory();
+
+
+
+
+  //Получение данных о пользователе и сохраненных фильмах
+  React.useEffect(() => {
+    console.log('Сработал юз эффект получения данных');
+    if (isLoggedIn) {
+      Promise.all([mainApi.getUserData(), mainApi.getAllSavedMovies()])
+        .then(([userData, savedMoviesData]) => {
+          console.log('userData', userData);
+          console.log('savedMoviesData', savedMoviesData.data);
+          setCurrentUser(userData);
+          setSavedMovies(savedMoviesData.data);
+          sessionStorage.setItem('localSavedMovies', JSON.stringify(savedMoviesData.data));
+        })
+        .catch(err => {
+          console.log(`Ошибка при загрузке данных с сервера ${err}`)
+        });
+    }
+  }, [isLoggedIn]);
 
   React.useEffect(() => {
     checkToken();
@@ -48,7 +68,7 @@ function App() {
       .then((data) => {
         if (data) {
           setCurrentUser(data);
-          handleLogin({ password, email })
+          handleLogin({ password, email });
         }
       })
       .catch((err) => {
@@ -58,9 +78,8 @@ function App() {
       .finally(() => { setIsLoading(false) });
   }
 
-
   function handleLogin({ password, email }) {
-    setIsLoading(true); // прелоадер
+    setIsLoading(true);
     mainApi.authorize({ password, email })
       .then((data) => {
         if (!data.token) {
@@ -68,9 +87,9 @@ function App() {
         }
         localStorage.setItem('jwt', data.token);
         mainApi.setToken(data.token);
-        // setSigninState(true);
+
         setIsLoggedIn(true);
-        history.push('/');
+        history.push('/movies');
       })
       .then(() => {
         mainApi.getUserData()
@@ -80,7 +99,6 @@ function App() {
           .catch((err) => { console.log(`Ошибка ${err}`) });
       })
       .catch((err) => {
-        // setSigninState(false);
         setIsLoggedIn(false);
         setIsLoading(false);
         console.log(`Ошибка ${err}`)
@@ -90,14 +108,13 @@ function App() {
 
   function checkToken() {
     const jwt = localStorage.getItem('jwt');
-
     if (jwt) {
       mainApi.checkToken(jwt)
         .then((res) => {
           if (res) {
             mainApi.setToken(jwt);
             setIsLoggedIn(true);
-            history.push('/');
+            history.push('/movies');
           }
         })
         .catch(err => {
@@ -114,22 +131,19 @@ function App() {
     setCurrentUser({});
   }
 
-
-  function handleUpdateUserDate({ email, name }) {
+  function handleUpdateUserData({ email, name }) {
     setIsLoading(true);
     mainApi.setUserData({ email, name })
       .then((data) => {
         console.log('ata', data);
-        setCurrentUser(data)
-      }).catch(err => {
+        setCurrentUser(data);
+      })
+      .catch(err => {
         setIsLoading(false);
         console.log(`Ошибка ${err}`)
       })
       .finally(() => setIsLoading(false))
   }
-
-
-
 
 
   const handleCheckboxState = ({ checkboxState: isShortMoviesOn }) => {
@@ -141,9 +155,6 @@ function App() {
 
     return shotMoviesOn;
   }
-
-
-
 
 
   const handleSearchMovies = ({ searchWord: searchQuery }) => { // сюда же должен прийти состояние чекбокса
@@ -221,28 +232,38 @@ function App() {
 
   // // Сохраняет фильм на сервере
   const handleAddMovieToSave = (movie) => {
-    console.log('вызвали функцию handleAddMovie');
-    // setIsLoading(true);
+    console.log('вызвали функцию handleAddMovie', movie.nameRu);
+    setIsLoading(true);
     mainApi.saveMovie(movie)
-      // Надо как-то помечать, что фильм добавлен
-      .catch(err => { console.log(err.message) })
-    // .finally(() => setIsLoading(false));
+      .then((newMovie) => {
+        console.log('добавили неовую карточку в массив', newMovie);
+        setSavedMovies([newMovie, ...savedMovies]);
+        console.log('массив сохраненных =', savedMovies);
+      })
+      .catch(err => {
+        console.log(err.message)
+      })
+      .finally(() => setIsLoading(false));
   }
 
-  // // Удаляет фильм с сервера
-  // const handleRemoveMovie = (movie) => {
-  //   console.log('вызвали функцию handleRemoveMovie');
-  //   // setIsLoading(true);
-  //   mainApi.removeMovie(movie.movieId)
-  //     // Надо как-то помечать, что фильм удален
-  //     .catch(err => { console.log(err.message) })
-  //   // .finally(() => setIsLoading(false));
-  // }
+  // Удаляет фильм с сервера
+  const handleRemoveSavedMovie = (movie) => {
+    console.log('вызвали функцию handleRemoveMovie', movie._id);
+    setIsLoading(true);
+    mainApi.removeMovie(movie._id)
+      .then(() => {
+        setSavedMovies(savedMovies => savedMovies.filter(film => film._id !== movie._id))
+      })
+      .catch(err => {
+        console.log(err.message)
+      })
+      .finally(() => setIsLoading(false));
+  }
 
-  // // Получает список сохраненных фильмов
+  // Получает список сохраненных фильмов
   // const handleGetSavedMovies = () => {
   //   console.log('вызвали функцию handleGetSavedMovies');
-  //   // setIsLoading(true);
+  //   setIsLoading(true);
   //   mainApi.getAllSavedMovies()
   //     .then((moviesData) => {
   //       console.log(moviesData);
@@ -251,10 +272,12 @@ function App() {
   //       localStorage.setItem('localSavedMovies', JSON.stringify(moviesData));
   //     })
   //     // Надо как-то помечать, что фильм удален
-  //     .catch(err => { console.log(err.message) })
-  //   // .finally(() => setIsLoading(false));
+  //     .catch(err => {
+  //       setIsLoading(false)
+  //       console.log(err.message)
+  //     })
+  //     .finally(() => setIsLoading(false));
   // }
-
 
   return (
     <CurrentUserContext.Provider value={currentUser} >
@@ -270,20 +293,24 @@ function App() {
               <Route path="/movies">
                 <Movies
                   movies={fiteredMovies}
+                  savedMovies={savedMovies}
                   onSearchSubmit={handleSearchMovies}
                   onShortFilmFilter={handleCheckboxState}
                   onAddMovie={handleAddMovieToSave}
-                // onRemoveMovie={props.onRemoveMovie}
+                  onRemoveMovie={handleRemoveSavedMovie}
                 // onChange={handleChange}
                 />
               </Route>
 
               <Route path="/saved-movies">
-                <SavedMovies />
+                <SavedMovies
+                  savedMovies={savedMovies}
+                  onRemoveMovie={handleRemoveSavedMovie}
+                />
               </Route>
 
               <Route path="/profile">
-                <Profile onExit={handleExit} onProfileUpdate={handleUpdateUserDate} />
+                <Profile onExit={handleExit} onProfileUpdate={handleUpdateUserData} />
               </Route>
 
               <Route path="/signin">

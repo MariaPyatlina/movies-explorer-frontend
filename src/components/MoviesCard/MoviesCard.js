@@ -6,18 +6,30 @@ import { EXTERNAL_API_URL } from '../../utils/constants';
 function MoviesCard(props) {
   const location = useLocation();
 
-  const [isMovieSaved, setIsMovieSaved] = React.useState(false);
+
+  console.log('savedMovies qq', props.savedMovies);
+
+  // const [isMovieSaved, setIsMovieSaved] = React.useState(false);
+
+  // Добавлена ли карточка в сохранённые ?
+  const isMovieSaved = props.savedMovies.some(savedMovie => savedMovie.nameRU === props.movie.nameRU);
+
 
   function handleAddMovie(evt) {
     evt.preventDefault();
-    props.onAddMovie(props.movie);
-    setIsMovieSaved(true);
+    console.log('savedMovies handleAddMovie', props.savedMovies, props.movie);
+    const isMovieAlradySaved = props.savedMovies.find(savedMovie => savedMovie.nameRU === props.movie.nameRU);
+
+    if (isMovieAlradySaved === undefined) {
+      props.onAddMovie(props.movie);
+      // setIsMovieSaved(true);
+    }
   }
 
   function handleRemoveMovie(evt) {
     evt.preventDefault();
     props.onRemoveMovie(props.movie);
-    setIsMovieSaved(false);
+    // setIsMovieSaved(false);
   }
 
   function defineEnding(movieDuration) { // определяет окончание для длительности фильма
@@ -26,15 +38,6 @@ function MoviesCard(props) {
     if (lastNumber === '1') { return ending = 'а' };
     if (lastNumber === '2' || lastNumber === '3' || lastNumber === '4') { return ending = 'ы' };
     return ending;
-  }
-
-  function handleClassNameButton() { // определяет класс для кнопки Сохранить/ Удалить
-    if (location.pathname === "/movies") {
-      return `movies-card__button ${!isMovieSaved ? "movies-card__button_saved" : "movies-card__button_save"}`;
-    }
-    if (location.pathname === "/saved-movies") {
-      return `movies-card__button movies-card__button_remove`;
-    }
   }
 
   return (
@@ -57,13 +60,26 @@ function MoviesCard(props) {
           />
         </a>
 
+        {/* // Кнопка Сохранить / Удалить */}
         <div className="movies-card__action-button">
-          <button
-            className={handleClassNameButton()}
-            type="button"
-            onClick={location.pathname === "/movies" && !isMovieSaved ? handleAddMovie : handleRemoveMovie}
-          >
-          </button>
+          {(location.pathname === "/movies") &&
+            <button
+              className={`movies-card__button ${!props.isMovieSaved ? "movies-card__button_save" : "movies-card__button_saved"}`}
+              type="button"
+              onClick={!props.isMovieSaved ? handleAddMovie : handleRemoveMovie}
+            ></button>
+          }
+
+          {/* // Кнопка Удалить */}
+          {(location.pathname === "/saved-movies") &&
+            <button
+              className="movies-card__button movies-card__button_remove"
+              type="button"
+              onClick={handleRemoveMovie}
+            >
+            </button>
+          }
+
         </div>
       </div>
     </>
