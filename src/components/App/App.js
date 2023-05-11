@@ -184,8 +184,10 @@ function App() {
   const filterMoviesBySearchQueryAndCheckboxState = (moviesArray, searchQuery, checkboxState) => {
     console.log('фильтрую. Начальные данные', moviesArray, searchQuery, checkboxState);
 
+
     let filteredByQuery = moviesArray.filter((film) => {
-      return (film.nameRU.includes(searchQuery) || film.nameEN.includes(searchQuery))
+      return film.nameRU.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        film.nameEN.toLowerCase().includes(searchQuery.toLowerCase())
     })
 
     if (checkboxState) {
