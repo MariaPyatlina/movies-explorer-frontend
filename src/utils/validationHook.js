@@ -1,8 +1,8 @@
 import React from "react";
 
 //хук управления формой и валидации формы
-export function useFormWithValidation() {
-  const [values, setValues] = React.useState({});
+export function useFormWithValidation(someParameter) {
+  const [values, setValues] = React.useState(someParameter);
   const [errors, setErrors] = React.useState({});
   const [isValid, setIsValid] = React.useState(false);
 

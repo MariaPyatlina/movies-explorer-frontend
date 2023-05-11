@@ -16,7 +16,11 @@ function Login(props) {
           </h1>
         </Route>
 
-        <AuthForm onLogin={props.onLogin} buttonTitle="Войти" />
+        <AuthForm
+          buttonTitle="Войти"
+          onLogin={props.onLogin}
+          errorFromBack={props.errorFromBack}
+        />
 
         <span className="register__login">
           Ещё&nbsp;не&nbsp;зарегистрированы?

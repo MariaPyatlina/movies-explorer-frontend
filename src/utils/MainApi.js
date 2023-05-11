@@ -21,8 +21,19 @@ class Api {
     if (res.ok) {
       return res.json();
     }
-    else Promise.reject(`Ошибка ${res.status}`);
+    else return Promise.reject(`Ошибка ${res.status, res.message}`);
   }
+
+  // _parseAnswer(res) {
+  //   if (!res.ok) {
+  //     console.log('28-29', res);
+  //     throw new Error(`my api returned an error ${res.statusText}, ${res.status}`)
+
+  //     // return res.json();
+  //   }
+  //   console.log(res);
+  //   return res.json();
+  // }
 
   //------------КАРТОЧКИ ФИЛЬМОВ--------------------
   //Создает карточку в базе
@@ -114,6 +125,7 @@ class Api {
       })
     })
       .then(res => this._parseAnswer(res))
+    // .catch(err => console.log(` Это в апи на 118${err.message}`))
   }
 
   authorize({ password, email }) {

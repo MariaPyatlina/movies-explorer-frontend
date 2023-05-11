@@ -8,8 +8,6 @@ import Burger from "../Burger/Burger";
 
 
 function Header(props) {
-  console.log('props.isLoggedIn ', props.isLoggedIn);
-
   const location = useLocation();
 
   return (

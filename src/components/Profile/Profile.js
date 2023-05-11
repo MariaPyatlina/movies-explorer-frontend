@@ -2,24 +2,30 @@ import React, { useEffect } from "react";
 import { Link } from 'react-router-dom';
 import './Profile.css';
 import "../Register/Register.css";
-import "../AuthForm/AuthForm.css"
-import { useFormWithValidation } from '../../utils/validationHook';
+import "../AuthForm/AuthForm.css";
 
 import CurrentUserContext from '../../contexts/CurrentUserContext';
+import { useFormWithValidation } from '../../utils/validationHook';
+
 
 // const isEditMode = true;
 
 function Profile(props) {
   const currentUser = React.useContext(CurrentUserContext);
+
   const { values, handleChange, errors, isValid } = useFormWithValidation({
     name: currentUser.name,
     email: currentUser.email,
   });
 
-  //
-  const [isEditMode, setIsEditMode] = React.useState(false);
-  const [isError, setIsError] = React.useState(false);
 
+  console.log('values.name ', values['name']);
+
+
+  const [isEditMode, setIsEditMode] = React.useState(false);
+
+  // ошибка, которая придет с сервера. Возможно, будет пропсом
+  const [isError, setIsError] = React.useState(false);
 
 
   function handleEditMode() {
@@ -28,12 +34,10 @@ function Profile(props) {
 
   function handleSubmit(evt) {
     evt.preventDefault();
-    console.log('handleSubmitEditProfile', values);
-
     props.onProfileUpdate({
       email: values.email,
       name: values.name
-    })
+    });
     setIsEditMode(false);
   }
 
@@ -41,8 +45,6 @@ function Profile(props) {
   const handleExit = () => {
     props.onExit();
   }
-
-
 
   return (
     <>
@@ -56,11 +58,22 @@ function Profile(props) {
               className="profile__input"
               name="name"
               type="text"
+              minLength="2"
+              maxLength="30"
               required
-              value={isEditMode ? values.name : currentUser.name}
+              // pattern="[]"
+              disabled={isEditMode ? false : true}
+              value={values.name || ''}
+              // value={isEditMode ? values.name : currentUser.name}
+
               onChange={handleChange}
             />
           </label>
+          {isEditMode && errors && (
+            <span className="profile__error-input">
+              {errors.name}
+            </span>
+          )}
 
           <label className="profile__lable">
             <span className="profile__lable-title">E&#8209;mail</span>
@@ -69,29 +82,34 @@ function Profile(props) {
               name="email"
               type="email"
               required
-              value={isEditMode ? values.email : currentUser.email}
+              // pattern=""
+              disabled={isEditMode ? false : true}
+              value={values.email || ''}
               onChange={handleChange}
             />
           </label>
+          {isEditMode && errors && (
+            <span className="profile__error-input">
+              {errors.email}
+            </span>
+          )}
           {isEditMode && (<> {
-            isError &&
+            props.errorFromBack &&
             (<span className="profile__error">
               {props.errMessage} При обновлении профиля произошла ошибка.
             </span>)
           }
             <button
-              className={`auth-from__submit-button auth-from__submit-button_profile ${isError ? "auth-from__submit-button_disabled" : ""}`}
+              className={`auth-from__submit-button auth-from__submit-button_profile ${!isValid || (currentUser.name === values['name'] && currentUser.email === values['email']) ? "auth-from__submit-button_disabled" : ""}`}
               type="submit"
               form="id_form__profile"
-              disabled={isError ? "disabled" : ""}
+              disabled={!isValid || (currentUser.name === values['name'] && currentUser.email === values['email']) ? true : false}
             >
               Сохранить
             </button>
           </>
           )}
         </form>
-
-
 
         {!isEditMode && (
           (<>

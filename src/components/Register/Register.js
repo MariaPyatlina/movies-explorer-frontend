@@ -12,7 +12,11 @@ function Register(props) {
             Добро пожаловать!
           </h1>
         </Route>
-        <AuthForm onRegister={props.onRegister} buttonTitle="Зарегистрироваться" />
+        <AuthForm
+          buttonTitle="Зарегистрироваться"
+          onRegister={props.onRegister}
+          errorFromBack={props.errorFromBack}
+        />
         <span className="register__login">
           Уже&nbsp;зарегистрированы?
           <Link to="/signin" className="register__login-link">Войти</Link>

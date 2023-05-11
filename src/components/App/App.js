@@ -38,6 +38,7 @@ function App() {
 
   // Регистрация и авторизация
   const [isLoggedIn, setIsLoggedIn] = React.useState(false); // Авторизован
+  const [errorFromBack, setErrorFromBack] = React.useState('');
 
   const history = useHistory();
 
@@ -46,12 +47,9 @@ function App() {
 
   //Получение данных о пользователе и сохраненных фильмах
   React.useEffect(() => {
-    console.log('Сработал юз эффект получения данных');
     if (isLoggedIn) {
       Promise.all([mainApi.getUserData(), mainApi.getAllSavedMovies()])
         .then(([userData, savedMoviesData]) => {
-          console.log('userData', userData);
-          console.log('savedMoviesData', savedMoviesData.data);
           setCurrentUser(userData);
           setSavedMovies(savedMoviesData.data);
           sessionStorage.setItem('localSavedMovies', JSON.stringify(savedMoviesData.data));
@@ -76,10 +74,14 @@ function App() {
         }
       })
       .catch((err) => {
-        setIsLoading(false);
+        setErrorFromBack(err.message);
+        console.log(`Ошибку поймал на 78й в app ${err}`,)
         console.log(`Ошибка ${err}`)
       })
-      .finally(() => { setIsLoading(false) });
+      .finally(() => {
+        console.log('errorFromBack в ошиюке', errorFromBack);
+        setIsLoading(false)
+      });
   }
 
   function handleLogin({ password, email }) {
@@ -130,7 +132,6 @@ function App() {
   function handleExit() {
     localStorage.removeItem('jwt');
     setIsLoggedIn(false);
-    console.log('exit done');
     history.push('/');
     setCurrentUser({});
   }
@@ -149,28 +150,9 @@ function App() {
       .finally(() => setIsLoading(false))
   }
 
-
-  // const handleCheckboxState = ({ checkboxState: isShortMoviesOn }) => {
-
-  //   const checkboxParams = { checkboxState: isShortMoviesOn };
-  //   isShotMoviesOn(checkboxParams.checkboxState);
-
-  //   console.log('shotMoviesOn', shotMoviesOn);
-
-  //   return shotMoviesOn;
-  // }
-
-  console.log('moviesCheckboxState in App', moviesCheckboxState);
   const handleSearchMovies = (searchQuery, moviesCheckboxState) => { // сюда же должен прийти состояние чекбокса
-    // const searchParams = { searchWord: searchQuery };
-
-
-    console.log('вызвали функцию handleSearchMovies moviesCheckboxState', moviesCheckboxState);
-
-
     // Проверяем, что лежит локально
     let localSavedMovies = JSON.parse(sessionStorage.getItem('movies'));
-    console.log('1. что лежит локально?', localSavedMovies);
 
     if (localSavedMovies === null || localSavedMovies === undefined || localSavedMovies === []) {
       console.log('2. Локально пусто. Пошел на сервер');
@@ -196,10 +178,6 @@ function App() {
       // Фильтруем данные из SessionStorage
       filterMoviesBySearchQueryAndCheckboxState(localSavedMovies, searchQuery, moviesCheckboxState);
     }
-
-
-
-
   }
 
 
@@ -222,33 +200,12 @@ function App() {
     }
   }
 
-
-
-  // const handleShortFilmFilter = ({ checkboxState: isShortMoviesOn }, array) => {
-  //   console.log('вызвали функцию handleShortFilmsCheckbox', { checkboxState: isShortMoviesOn });
-  //   const obj = { checkboxState: isShortMoviesOn };
-  //   const checkboxState = obj.checkboxState;
-  //   // const localSavedMovies = JSON.parse(sessionStorage.getItem('localMovies'));
-  //   if (checkboxState) {
-  //     let filteredMoviesByDuration = array.filter((film) => {
-  //       return film.duration <= 40;
-  //     })
-
-  //     console.log('фильтрация по длительности', filteredMoviesByDuration);
-  //   }
-
-  // }
-
-
   // // Сохраняет фильм на сервере
   const handleAddMovieToSave = (movie) => {
-    console.log('вызвали функцию handleAddMovie', movie.nameRu);
     setIsLoading(true);
     mainApi.saveMovie(movie)
       .then((newMovie) => {
-        console.log('добавили неовую карточку в массив', newMovie);
         setSavedMovies([newMovie, ...savedMovies]);
-        console.log('массив сохраненных =', savedMovies);
       })
       .catch(err => {
         console.log(err.message)
@@ -258,8 +215,6 @@ function App() {
 
   // Удаляет фильм с сервера
   const handleRemovedMovie = (movie) => {
-    console.log('вызвали функцию handleRemoveMovie', movie.id); // id = 2
-
     const savedMovieForDelete = savedMovies.find(savedMovie => savedMovie.movieId === movie.id);
 
     setIsLoading(true);
@@ -290,27 +245,9 @@ function App() {
 
   const handleCheckboxClick = (currentChekboxState) => {
     setMoviesCheckboxState(currentChekboxState);
+    // handleSearchMovies(movies, moviesQuery, currentChekboxState);
   }
 
-
-  // Получает список сохраненных фильмов
-  // const handleGetSavedMovies = () => {
-  //   console.log('вызвали функцию handleGetSavedMovies');
-  //   setIsLoading(true);
-  //   mainApi.getAllSavedMovies()
-  //     .then((moviesData) => {
-  //       console.log(moviesData);
-  //       // setSavedMovies(moviesData);
-  //       // Сохранили в localStorage
-  //       localStorage.setItem('localSavedMovies', JSON.stringify(moviesData));
-  //     })
-  //     // Надо как-то помечать, что фильм удален
-  //     .catch(err => {
-  //       setIsLoading(false)
-  //       console.log(err.message)
-  //     })
-  //     .finally(() => setIsLoading(false));
-  // }
 
   return (
     <CurrentUserContext.Provider value={currentUser} >
@@ -347,15 +284,15 @@ function App() {
               </Route>
 
               <Route path="/profile">
-                <Profile onExit={handleExit} onProfileUpdate={handleUpdateUserData} />
+                <Profile onExit={handleExit} onProfileUpdate={handleUpdateUserData} errorFromBack={errorFromBack} />
               </Route>
 
               <Route path="/signin">
-                <Login onLogin={handleLogin} />
+                <Login onLogin={handleLogin} errorFromBack={errorFromBack} />
               </Route>
 
               <Route path="/signup">
-                <Register onRegister={handleRegister} />
+                <Register onRegister={handleRegister} errorFromBack={errorFromBack} />
               </Route>
 
               <Route path="/notfound">
