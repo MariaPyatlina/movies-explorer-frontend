@@ -12,7 +12,6 @@ function Movies(props) {
         moviesQuery={props.moviesQuery}
         onSearchSubmit={props.onSearchSubmit}
         // onShortFilmFilter={props.onShortFilmFilter}
-
         moviesCheckboxState={props.moviesCheckboxState}
         onCheckboxClick={props.onCheckboxClick}
       />
@@ -25,8 +24,8 @@ function Movies(props) {
         onRemoveSavedMovie={props.onRemoveSavedMovie}
       />
 
-      {/* <div className={`movies-cards__list-empty ${props.movies ? "" : "movies-cards__list-empty_hidden"}`}>Ничего не найдено</div>
-            <button className={`movies-cards__button-more ${props.movies ? "movies-cards__button-more_hidden" : ""}`} type="button">Ещё</button> */}
+
+      {/* <button className={`movies-cards__button-more ${props.movies ? "movies-cards__button-more_hidden" : ""}`} type="button">Ещё</button> */}
 
     </>
 

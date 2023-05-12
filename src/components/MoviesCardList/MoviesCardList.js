@@ -12,53 +12,44 @@ function MoviesCardList(props) {
         <div className="movies-card__list">
           {location.pathname === '/movies' ?
             <>
-              {props.movies.map((movie) => { //Выводит фильмы с внешнего сервера
-                return (
-                  <MoviesCard
-                    key={movie.id}
-                    movie={movie}
-                    savedMovies={props.savedMovies}
-                    onAddMovie={props.onAddMovie}
-                    onRemoveMovie={props.onRemoveMovie}
-                  // isMovieSaved={props.isMovieSaved}
-                  />
-                )
-              })
-              }
-            </> :
-            <>
-              {props.savedMovies.length === 0 ? "у вас пока нет сохранённых фильмов" :
+              {(props.movies.length === 0) ? <div className="movies-cards__list-empty">Ничего не найдено</div> :
                 <>
-                  {props.savedMovies.map((movie) => { //Выводит сохраненые фильмы
+                  {props.movies.map((movie) => { //Выводит фильмы с внешнего сервера
                     return (
                       <MoviesCard
-                        key={movie._id}
+                        key={movie.id}
                         movie={movie}
                         savedMovies={props.savedMovies}
-                        onRemoveSavedMovie={props.onRemoveSavedMovie}
-
+                        onAddMovie={props.onAddMovie}
+                        onRemoveMovie={props.onRemoveMovie}
+                      // isMovieSaved={props.isMovieSaved}
                       />
                     )
-                  })
-                  }
+                  })}
                 </>
               }
-
             </>
-
+            :
+            <>{(props.savedMovies.length === 0) ? <div className="movies-cards__list-empty">Ничего не найдено</div> :
+              <>
+                {props.savedMovies.map((movie) => { //Выводит сохраненые фильмы
+                  return (
+                    <MoviesCard
+                      key={movie._id}
+                      movie={movie}
+                      savedMovies={props.savedMovies}
+                      onRemoveSavedMovie={props.onRemoveSavedMovie}
+                    />
+                  )
+                })}
+              </>
+            }
+            </>
           }
-
         </div>
-        <div className={`movies-cards__list-empty ${props.movies ? "" : "movies-cards__list-empty_hidden"}`}>Ничего не найдено</div>
-        {location.pathname === '/movies' ?
-          <button className={`movies-cards__button-more ${props.movies ? "movies-cards__button-more_hidden" : ""}`} type="button">Ещё</button>
-          :
-          <></>
-        }
-
       </section>
-    </>
 
+    </>
   )
 
 }

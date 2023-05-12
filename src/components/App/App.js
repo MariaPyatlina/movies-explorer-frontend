@@ -287,7 +287,7 @@ function App() {
                 <Main />
               </Route>
 
-              <ProtectedRoute path="/movies">
+              <Route path="/movies">
                 <Movies
                   movies={fiteredMovies}
                   savedMovies={savedMovies} // Массив сохраненных фильмов
@@ -301,9 +301,9 @@ function App() {
                   moviesCheckboxState={moviesCheckboxState}
                   onCheckboxClick={handleCheckboxClick}
                 />
-              </ProtectedRoute>
+              </Route>
 
-              <ProtectedRoute path="/saved-movies">
+              <Route path="/saved-movies">
                 <SavedMovies
                   savedMovies={filteredSavedMovies}  // Отфильтрованые Сохраненные фильмы
                   onRemoveSavedMovie={handleRemoveSavedMovie} // удаление из избранного
@@ -313,11 +313,11 @@ function App() {
                   moviesCheckboxState={moviesCheckboxState} // состояние чекбокса
                   onCheckboxClick={handleCheckboxClick} // клик по чекбоксу
                 />
-              </ProtectedRoute>
+              </Route>
 
-              <ProtectedRoute path="/profile">
+              <Route path="/profile">
                 <Profile onExit={handleExit} onProfileUpdate={handleUpdateUserData} errorFromBack={errorFromBack} />
-              </ProtectedRoute>
+              </Route>
 
               <Route path="/signin">
                 <Login onLogin={handleLogin} errorFromBack={errorFromBack} />
