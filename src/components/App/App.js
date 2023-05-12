@@ -37,6 +37,7 @@ function App() {
   // Для фильтрации и поиска
   const [moviesQuery, setMoviesQuery] = React.useState('');
   const [moviesCheckboxState, setMoviesCheckboxState] = React.useState(false);
+  const [moviesCheckboxStateSavedMovies, setMoviesCheckboxStateSavedMovies] = React.useState(false);
 
   // Регистрация и авторизация
   const [isLoggedIn, setIsLoggedIn] = React.useState(false); // Авторизован
@@ -275,6 +276,11 @@ function App() {
     // handleSearchMovies(movies, moviesQuery, currentChekboxState);
   }
 
+  const handleCheckboxClickSavedMovies = (currentChekboxState) => {
+    setMoviesCheckboxStateSavedMovies(currentChekboxState);
+    // handleSearchMovies(movies, moviesQuery, currentChekboxState);
+  }
+
 
   return (
     <CurrentUserContext.Provider value={currentUser} >
@@ -310,8 +316,8 @@ function App() {
 
                   moviesQuery={moviesQuery} // поисковый запрос
                   onSearchSubmit={handleLocalSearch} // действие по кнопке Сабмит
-                  moviesCheckboxState={moviesCheckboxState} // состояние чекбокса
-                  onCheckboxClick={handleCheckboxClick} // клик по чекбоксу
+                  moviesCheckboxState={moviesCheckboxStateSavedMovies} // состояние чекбокса
+                  onCheckboxClick={handleCheckboxClickSavedMovies} // клик по чекбоксу
                 />
               </Route>
 
