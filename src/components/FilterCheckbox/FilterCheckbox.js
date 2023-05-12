@@ -3,8 +3,6 @@ import './FilterCheckbox.css';
 
 function FilterCheckbox(props) {
   const handleClickMovies = () => {
-    console.log('props.moviesCheckboxState', props.moviesCheckboxState);
-
     const newCheckboxState = !props.moviesCheckboxState;
     props.onCheckboxClick(newCheckboxState);
   }

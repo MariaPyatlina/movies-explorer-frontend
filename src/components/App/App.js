@@ -15,12 +15,22 @@ import Preloader from '../Preloader/Preloader';
 
 import getMoviesCards from '../../utils/moviesApi';
 import mainApi from '../../utils/mainApi';
+import { filterMovieByQuery, filterMovieByDuration } from '../../utils/filterMovie';
 
 import CurrentUserContext from '../../contexts/CurrentUserContext.js';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute.js';
 
 
 function App() {
+
+  const getInitialStateForSearch = (field, key) => {
+    const initialSearchParams = JSON.parse(localStorage.getItem(field));
+
+    if (initialSearchParams === null) { return '' }
+    else { return initialSearchParams[key] }
+  }
+
+
   const [currentUser, setCurrentUser] = React.useState({});
 
 
@@ -35,15 +45,17 @@ function App() {
   const [isMovieSaved, setIsMovieSaved] = React.useState(false);
 
   // Для фильтрации и поиска
-  const [moviesQuery, setMoviesQuery] = React.useState('');
-  const [moviesCheckboxState, setMoviesCheckboxState] = React.useState(false);
-  const [moviesCheckboxStateSavedMovies, setMoviesCheckboxStateSavedMovies] = React.useState(false);
+  const [moviesQuery, setMoviesQuery] = React.useState(getInitialStateForSearch('searchParams', 'searchQuery'));
+  const [savedMoviesQuery, setSavedMoviesQuery] = React.useState(getInitialStateForSearch('localSearchParams', 'savedMoviesQuery'));
+  const [moviesCheckboxState, setMoviesCheckboxState] = React.useState(getInitialStateForSearch('searchParams', 'checkboxState'));
+  const [moviesCheckboxStateSavedMovies, setMoviesCheckboxStateSavedMovies] = React.useState(getInitialStateForSearch('localSearchParams', 'moviesCheckboxStateSavedMovies'));
 
   // Регистрация и авторизация
   const [isLoggedIn, setIsLoggedIn] = React.useState(false); // Авторизован
   const [errorFromBack, setErrorFromBack] = React.useState('');
 
   const history = useHistory();
+
 
 
 
@@ -156,6 +168,10 @@ function App() {
   const handleSearchMovies = (searchQuery, moviesCheckboxState) => { // сюда же должен прийти состояние чекбокса
     // Проверяем, что лежит локально
     let localSavedMovies = JSON.parse(sessionStorage.getItem('movies'));
+    const initialSearchParams = JSON.parse(localStorage.getItem('searchParams'));
+    console.log('initialSearchParams', initialSearchParams);
+    const initialLocalSearchParams = JSON.parse(localStorage.getItem('localSearchParams'));
+    console.log('initialLocalSearchParams', initialLocalSearchParams);
 
     if (localSavedMovies === null || localSavedMovies === undefined || localSavedMovies === []) {
       console.log('2. Локально пусто. Пошел на сервер');
@@ -187,48 +203,26 @@ function App() {
   const filterMoviesBySearchQueryAndCheckboxState = (moviesArray, searchQuery, checkboxState) => {
     console.log('фильтрую. Начальные данные', moviesArray, searchQuery, checkboxState);
 
+    localStorage.setItem('searchParams', JSON.stringify({ searchQuery, checkboxState }));
+    const filteredByQuery = filterMovieByQuery(moviesArray, searchQuery);
+    const filteredByDuration = filterMovieByDuration(filteredByQuery, moviesCheckboxStateSavedMovies);
 
-    let filteredByQuery = moviesArray.filter((film) => {
-      return film.nameRU.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        film.nameEN.toLowerCase().includes(searchQuery.toLowerCase())
-    })
-
-    if (checkboxState) {
-      let filteredMoviesByDuration = filteredByQuery.filter((film) => {
-        return film.duration <= 40;
-      })
-
-      return setFileredMovies(filteredMoviesByDuration);
-    }
-    else {
-      return setFileredMovies(filteredByQuery);
-    }
+    return setfilteredSavedMovies(filteredByDuration);
   }
 
   //Поиск по сохраненным фильмам
-  const handleLocalSearch = (searchQuery, checkboxState) => {
+  const handleLocalSearch = (savedMoviesQuery, moviesCheckboxStateSavedMovies) => {
     const currentSavedMovie = JSON.parse(sessionStorage.getItem('localSavedMovies'));
-    console.log('фильтрую. Сохраненные данные данные', currentSavedMovie, searchQuery, checkboxState);
+    console.log('фильтрую. Сохраненные данные данные', currentSavedMovie, savedMoviesQuery, moviesCheckboxStateSavedMovies);
 
+    localStorage.setItem('localSearchParams', JSON.stringify({ savedMoviesQuery, moviesCheckboxStateSavedMovies }));
+    const filteredByQuery = filterMovieByQuery(currentSavedMovie, savedMoviesQuery);
+    const filteredByDuration = filterMovieByDuration(filteredByQuery, moviesCheckboxStateSavedMovies);
 
-    let filteredByQuery = currentSavedMovie.filter((film) => {
-      return film.nameRU.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        film.nameEN.toLowerCase().includes(searchQuery.toLowerCase())
-    })
-
-    if (checkboxState) {
-      let filteredMoviesByDuration = filteredByQuery.filter((film) => {
-        return film.duration <= 40;
-      })
-
-      return setfilteredSavedMovies(filteredMoviesByDuration);
-    }
-    else {
-      return setfilteredSavedMovies(filteredByQuery);
-    }
+    return setfilteredSavedMovies(filteredByDuration);
   }
 
-  // // Сохраняет фильм на сервере
+  // Сохраняет фильм на сервере
   const handleAddMovieToSave = (movie) => {
     setIsLoading(true);
     mainApi.saveMovie(movie)
@@ -273,12 +267,10 @@ function App() {
 
   const handleCheckboxClick = (currentChekboxState) => {
     setMoviesCheckboxState(currentChekboxState);
-    // handleSearchMovies(movies, moviesQuery, currentChekboxState);
   }
 
   const handleCheckboxClickSavedMovies = (currentChekboxState) => {
     setMoviesCheckboxStateSavedMovies(currentChekboxState);
-    // handleSearchMovies(movies, moviesQuery, currentChekboxState);
   }
 
 
@@ -298,12 +290,13 @@ function App() {
                   movies={fiteredMovies}
                   savedMovies={savedMovies} // Массив сохраненных фильмов
                   isMovieSaved={isMovieSaved}
-                  onSearchSubmit={handleSearchMovies}
+                  // onSearchSubmit={handleSearchMovies}
                   // onShortFilmFilter={handleCheckboxState}
                   onAddMovie={handleAddMovieToSave}
                   onRemoveMovie={handleRemovedMovie}
                   // onChange={handleChange}
                   moviesQuery={moviesQuery}
+                  onSearchSubmit={handleSearchMovies}
                   moviesCheckboxState={moviesCheckboxState}
                   onCheckboxClick={handleCheckboxClick}
                 />
@@ -314,7 +307,7 @@ function App() {
                   savedMovies={filteredSavedMovies}  // Отфильтрованые Сохраненные фильмы
                   onRemoveSavedMovie={handleRemoveSavedMovie} // удаление из избранного
 
-                  moviesQuery={moviesQuery} // поисковый запрос
+                  moviesQuery={savedMoviesQuery} // поисковый запрос
                   onSearchSubmit={handleLocalSearch} // действие по кнопке Сабмит
                   moviesCheckboxState={moviesCheckboxStateSavedMovies} // состояние чекбокса
                   onCheckboxClick={handleCheckboxClickSavedMovies} // клик по чекбоксу

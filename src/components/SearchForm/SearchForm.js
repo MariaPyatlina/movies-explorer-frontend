@@ -6,8 +6,6 @@ function SearchForm(props) {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = React.useState(props.moviesQuery); // исходно запрос пустой
 
-  console.log('props.moviesCheckboxState в форме поиска', props.moviesCheckboxState);
-
   const handleSearchQueryChange = (evt) => {
     setSearchQuery(evt.target.value);
   }
@@ -20,18 +18,13 @@ function SearchForm(props) {
     props.onSearchSubmit(searchQuery, props.moviesCheckboxState);
   }
 
-  const handleLocalSeachSubmit = (evt) => {
-    evt.preventDefault();
-    console.log('localSearchSubmit', searchQuery, props.moviesCheckboxState);
-    props.onSearchSubmit(searchQuery, props.moviesCheckboxState);
-  }
 
   return (
     <>
       <form
         className="search-form"
         id="search-form"
-        onSubmit={location.pathname === "/movies" ? handleSearchSubmit : handleLocalSeachSubmit}
+        onSubmit={handleSearchSubmit}
       >
         <label className="search-form__input-form">
           <input

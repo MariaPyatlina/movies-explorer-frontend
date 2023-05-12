@@ -12,8 +12,6 @@ function MoviesCard(props) {
   // Добавлена ли карточка в сохранённые ?
   const isMovieSaved = props.savedMovies.some(movie => movie.movieId === props.movie.id);
 
-  // console.log('isMovieSaved', isMovieSaved);
-
   function handleAddMovie(evt) {
     evt.preventDefault();
     console.log('savedMovies handleAddMovie', props.savedMovies, props.movie);
@@ -21,20 +19,17 @@ function MoviesCard(props) {
 
     if (isMovieAlradySaved === undefined) {
       props.onAddMovie(props.movie);
-      // setIsMovieSaved(true);
     }
   }
 
   function handleRemoveMovie(evt) {
     evt.preventDefault();
     props.onRemoveMovie(props.movie);
-    // setIsMovieSaved(false);
   }
 
   function handleRemoveSavedMovie(evt) {
     evt.preventDefault();
     props.onRemoveSavedMovie(props.movie);
-    // setIsMovieSaved(false);
   }
 
   function defineEnding(movieDuration) { // определяет окончание для длительности фильма
