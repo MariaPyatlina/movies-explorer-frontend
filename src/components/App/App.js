@@ -58,8 +58,6 @@ function App() {
 
 
 
-
-
   //Получение данных о пользователе и сохраненных фильмах
   React.useEffect(() => {
     if (isLoggedIn) {
@@ -168,10 +166,6 @@ function App() {
   const handleSearchMovies = (searchQuery, moviesCheckboxState) => { // сюда же должен прийти состояние чекбокса
     // Проверяем, что лежит локально
     let localSavedMovies = JSON.parse(sessionStorage.getItem('movies'));
-    const initialSearchParams = JSON.parse(localStorage.getItem('searchParams'));
-    console.log('initialSearchParams', initialSearchParams);
-    const initialLocalSearchParams = JSON.parse(localStorage.getItem('localSearchParams'));
-    console.log('initialLocalSearchParams', initialLocalSearchParams);
 
     if (localSavedMovies === null || localSavedMovies === undefined || localSavedMovies === []) {
       console.log('2. Локально пусто. Пошел на сервер');
@@ -199,18 +193,18 @@ function App() {
     }
   }
 
-  // Поиск по всем фильмам
+
   const filterMoviesBySearchQueryAndCheckboxState = (moviesArray, searchQuery, checkboxState) => {
     console.log('фильтрую. Начальные данные', moviesArray, searchQuery, checkboxState);
 
     localStorage.setItem('searchParams', JSON.stringify({ searchQuery, checkboxState }));
     const filteredByQuery = filterMovieByQuery(moviesArray, searchQuery);
-    const filteredByDuration = filterMovieByDuration(filteredByQuery, moviesCheckboxStateSavedMovies);
+    const filteredByDuration = filterMovieByDuration(filteredByQuery, checkboxState);
 
-    return setfilteredSavedMovies(filteredByDuration);
+    return setFileredMovies(filteredByDuration);
   }
 
-  //Поиск по сохраненным фильмам
+  // //Поиск по сохраненным фильмам
   const handleLocalSearch = (savedMoviesQuery, moviesCheckboxStateSavedMovies) => {
     const currentSavedMovie = JSON.parse(sessionStorage.getItem('localSavedMovies'));
     console.log('фильтрую. Сохраненные данные данные', currentSavedMovie, savedMoviesQuery, moviesCheckboxStateSavedMovies);
@@ -221,6 +215,7 @@ function App() {
 
     return setfilteredSavedMovies(filteredByDuration);
   }
+
 
   // Сохраняет фильм на сервере
   const handleAddMovieToSave = (movie) => {
