@@ -3,7 +3,6 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 
 function SearchForm(props) {
-  const location = useLocation();
   const [searchQuery, setSearchQuery] = React.useState(props.moviesQuery);
 
   const handleSearchQueryChange = (evt) => {

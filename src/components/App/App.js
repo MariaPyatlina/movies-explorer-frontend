@@ -171,6 +171,7 @@ function App() {
   const handleSearchMovies = (searchQuery, moviesCheckboxState) => { // сюда же должен прийти состояние чекбокса
     // Проверяем, что лежит локально
     let localSavedMovies = JSON.parse(sessionStorage.getItem('movies'));
+    setMoviesQuery(searchQuery);
 
     if (localSavedMovies === null || localSavedMovies === undefined || localSavedMovies === []) {
       console.log('2. Локально пусто. Пошел на сервер');
@@ -214,6 +215,7 @@ function App() {
   // //Поиск по сохраненным фильмам
   const handleLocalSearch = (savedMoviesQuery, moviesCheckboxStateSavedMovies) => {
     const currentSavedMovie = JSON.parse(sessionStorage.getItem('localSavedMovies'));
+    setSavedMoviesQuery(savedMoviesQuery);
     console.log('фильтрую. Сохраненные данные данные', currentSavedMovie, savedMoviesQuery, moviesCheckboxStateSavedMovies);
 
     localStorage.setItem('localSearchParams', JSON.stringify({ savedMoviesQuery, moviesCheckboxStateSavedMovies }));
