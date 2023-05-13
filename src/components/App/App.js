@@ -76,6 +76,9 @@ function App() {
       Promise.all([mainApi.getUserData(), mainApi.getAllSavedMovies()])
         .then(([userData, savedMoviesData]) => {
           setCurrentUser(userData);
+          if (!savedMoviesQuery && !moviesCheckboxStateSavedMovies) {
+            setfilteredSavedMovies(savedMoviesData.data)
+          }
           setSavedMovies(savedMoviesData.data);
           sessionStorage.setItem('localSavedMovies', JSON.stringify(savedMoviesData.data));
         })
@@ -118,9 +121,6 @@ function App() {
       setInitialCountParameters(size);
 
       return size;
-
-      // console.log('handleCount availableScreenWidth', screenWidth);
-      console.log('initialCountParameters', initialCountParameters);
     }
 
     const size = handleResizeCount();
@@ -300,6 +300,8 @@ function App() {
 
   // Поиск по сохраненным фильмам
   const handleLocalSearch = (savedMoviesQuery, moviesCheckboxStateSavedMovies) => {
+
+    console.log('первый запуск', savedMoviesQuery, moviesCheckboxStateSavedMovies);
     const currentSavedMovie = JSON.parse(sessionStorage.getItem('localSavedMovies'));
     setSavedMoviesQuery(savedMoviesQuery);
     console.log('фильтрую. Сохраненные данные данные', currentSavedMovie, savedMoviesQuery, moviesCheckboxStateSavedMovies);
