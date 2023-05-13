@@ -20,8 +20,3 @@ export const filterMovieByDuration = (movieArray, checkboxState) => {
     return movieArray;
   }
 }
-
-// export default {
-//   filterMovieByQuery,
-//   filterMovieByDuration
-// }

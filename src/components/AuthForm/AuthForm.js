@@ -11,7 +11,7 @@ function AuthForm(props) {
 
   // ошибка, которая придет с сервера. Возможно, будет пропсом
   // const [isError, setIsError] = React.useState(false);
-  console.log('errorFromBack={props.errorFromBack}', props.errorFromBack);
+  console.log('errorFromBack в форме регистрации', props.errorFromBack);
 
 
   const handleSubmitRegister = (evt) => {
@@ -63,7 +63,7 @@ function AuthForm(props) {
         className="auth-from__input"
         type="email"
         name="email"
-        required
+        // required
         value={values.email || ''}
         onChange={handleChange}
       />
@@ -83,7 +83,7 @@ function AuthForm(props) {
 
       {props.errorFromBack && (
         <span className="profile__error">
-          {props.errMessage} Какая-то ошибка
+          {props.errMessage}
         </span>
       )}
 

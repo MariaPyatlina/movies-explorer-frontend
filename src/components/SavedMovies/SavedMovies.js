@@ -7,7 +7,6 @@ function SavedMovies(props) {
     <>
       <SearchBlock
         moviesQuery={props.moviesQuery}
-        // onChange={props.onChange}
         onSearchSubmit={props.onSearchSubmit}
         moviesCheckboxState={props.moviesCheckboxState}
         onCheckboxClick={props.onCheckboxClick}

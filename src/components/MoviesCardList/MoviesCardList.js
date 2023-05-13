@@ -1,10 +1,12 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import MoviesCard from '../MoviesCard/MoviesCard';
+
 import './MoviesCardList.css';
 
 function MoviesCardList(props) {
   const location = useLocation();
+  console.log('isLoading={props.isLoading}', props.isLoading);
 
   return (
     <>

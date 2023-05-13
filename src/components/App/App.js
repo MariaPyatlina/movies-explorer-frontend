@@ -12,9 +12,9 @@ import Login from '../Login/Login';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import Preloader from '../Preloader/Preloader';
 
-
 import getMoviesCards from '../../utils/moviesApi';
 import mainApi from '../../utils/mainApi';
+
 import { filterMovieByQuery, filterMovieByDuration } from '../../utils/filterMovie';
 
 import CurrentUserContext from '../../contexts/CurrentUserContext.js';
@@ -22,7 +22,6 @@ import ProtectedRoute from '../ProtectedRoute/ProtectedRoute.js';
 
 
 function App() {
-
   const getInitialStateForSearch = (field, key) => {
     const initialSearchParams = JSON.parse(localStorage.getItem(field));
 
@@ -33,13 +32,9 @@ function App() {
 
   const [currentUser, setCurrentUser] = React.useState({});
 
-
   const [movies, setMovies] = React.useState([]); // Карточки загруженные с внешнего сервера
   const [moviesLocal, setMoviesLocal] = React.useState([]); // Сохраненные карточеки в seesionStorage
   const [fiteredMovies, setFileredMovies] = React.useState(getInitialStateForSearch('searchResult', 'filteredByDuration')); //Массив отфильтрованных фильмов на внешнем сервере
-
-  // localStorage.setItem('searchResult', JSON.stringify(filteredByDuration));
-
 
   const [savedMovies, setSavedMovies] = React.useState([]); // Фильмы. которые сохранены на внутреннем сервере
   const [filteredSavedMovies, setfilteredSavedMovies] = React.useState(getInitialStateForSearch('localSearchResult', 'filteredByDuration')); // Фильмы. которые отфильтровал на внутреннем сервере
@@ -63,6 +58,7 @@ function App() {
 
 
 
+
   //Получение данных о пользователе и сохраненных фильмах
   React.useEffect(() => {
     if (isLoggedIn) {
@@ -73,6 +69,7 @@ function App() {
           sessionStorage.setItem('localSavedMovies', JSON.stringify(savedMoviesData.data));
         })
         .catch(err => {
+          setErrorFromBack(err);
           console.log(`Ошибка при загрузке данных с сервера ${err}`)
         });
     }
@@ -81,6 +78,7 @@ function App() {
   React.useEffect(() => {
     checkToken();
   }, []);
+
 
   function handleRegister({ password, email, name }) {
     setIsLoading(true);
@@ -92,9 +90,9 @@ function App() {
         }
       })
       .catch((err) => {
-        setErrorFromBack(err.message);
-        console.log(`Ошибку поймал на 78й в app ${err}`,)
-        console.log(`Ошибка ${err}`)
+        setErrorFromBack(err);
+        console.log(`Ошибку поймал на 78й в app ${err}`, err.message);
+        console.log(`Ошибка ${err}`);
       })
       .finally(() => {
         console.log('errorFromBack в ошиюке', errorFromBack);
@@ -111,7 +109,6 @@ function App() {
         }
         localStorage.setItem('jwt', data.token);
         mainApi.setToken(data.token);
-
         setIsLoggedIn(true);
         history.push('/movies');
       })
@@ -120,11 +117,15 @@ function App() {
           .then((data) => {
             setCurrentUser(data);
           })
-          .catch((err) => { console.log(`Ошибка ${err}`) });
+          .catch((err) => {
+            setErrorFromBack(err.message);
+            console.log(`Ошибка ${err}`)
+          });
       })
       .catch((err) => {
         setIsLoggedIn(false);
         setIsLoading(false);
+        setErrorFromBack(err.message);
         console.log(`Ошибка ${err}`)
       })
       .finally(() => { setIsLoading(false) });
@@ -142,7 +143,8 @@ function App() {
           }
         })
         .catch(err => {
-          console.log(`Ошибка ${err}`)
+          setErrorFromBack(err.message);
+          console.log(`Ошибка ${err}`);
         });
     }
   }
@@ -163,6 +165,7 @@ function App() {
       })
       .catch(err => {
         setIsLoading(false);
+        setErrorFromBack(err.message);
         console.log(`Ошибка ${err}`)
       })
       .finally(() => setIsLoading(false))
@@ -184,6 +187,7 @@ function App() {
           filterMoviesBySearchQueryAndCheckboxState(moviesData, searchQuery, moviesCheckboxState);
         })
         .catch(err => {
+          setErrorFromBack(err.message);
           console.log(err.message);
         })
         .finally(() => {
@@ -236,7 +240,8 @@ function App() {
         setSavedMovies([newMovie, ...savedMovies]);
       })
       .catch(err => {
-        console.log(err.message)
+        setErrorFromBack(err.message);
+        console.log(err.message);
       })
       .finally(() => setIsLoading(false));
   }
@@ -251,7 +256,8 @@ function App() {
         setSavedMovies(savedMovies => savedMovies.filter(film => film._id !== savedMovieForDelete._id))
       })
       .catch(err => {
-        console.log(err.message)
+        setErrorFromBack(err.message);
+        console.log(err.message);
       })
       .finally(() => setIsLoading(false));
   }
@@ -265,7 +271,8 @@ function App() {
         setSavedMovies(savedMovies => savedMovies.filter(film => film._id !== movie._id))
       })
       .catch(err => {
-        console.log(err.message)
+        setErrorFromBack(err.message);
+        console.log(err.message);
       })
       .finally(() => setIsLoading(false));
   }
@@ -285,62 +292,74 @@ function App() {
       <div className="page">
         <div className="container">
           <Header isLoggedIn={isLoggedIn} />
-          {isLoading ? <Preloader /> :
-            <Switch>
-              <Route exact path="/">
-                <Main />
-              </Route>
+          {/* {isLoading ? <Preloader /> : */}
+          <Switch>
+            <Route exact path="/">
+              <Main />
+            </Route>
 
-              <Route path="/movies">
-                <Movies
-                  movies={fiteredMovies}
-                  savedMovies={savedMovies} // Массив сохраненных фильмов
-                  isMovieSaved={isMovieSaved}
-                  // onSearchSubmit={handleSearchMovies}
-                  // onShortFilmFilter={handleCheckboxState}
-                  onAddMovie={handleAddMovieToSave}
-                  onRemoveMovie={handleRemovedMovie}
-                  // onChange={handleChange}
-                  moviesQuery={moviesQuery}
-                  onSearchSubmit={handleSearchMovies}
-                  moviesCheckboxState={moviesCheckboxState}
-                  onCheckboxClick={handleCheckboxClick}
-                />
-              </Route>
+            <Route path="/movies">
+              <Movies
+                movies={fiteredMovies}
+                savedMovies={savedMovies} // Массив сохраненных фильмов
+                isMovieSaved={isMovieSaved}
+                onAddMovie={handleAddMovieToSave}
+                onRemoveMovie={handleRemovedMovie}
+                moviesQuery={moviesQuery}
+                onSearchSubmit={handleSearchMovies}
+                moviesCheckboxState={moviesCheckboxState}
+                onCheckboxClick={handleCheckboxClick}
+                errorFromBack={errorFromBack}
+                isLoading={isLoading}
+              />
+            </Route>
 
-              <Route path="/saved-movies">
-                <SavedMovies
-                  savedMovies={filteredSavedMovies}  // Отфильтрованые Сохраненные фильмы
-                  onRemoveSavedMovie={handleRemoveSavedMovie} // удаление из избранного
+            <Route path="/saved-movies">
+              <SavedMovies
+                savedMovies={filteredSavedMovies}  // Отфильтрованые Сохраненные фильмы
+                onRemoveSavedMovie={handleRemoveSavedMovie} // удаление из избранного
+                moviesQuery={savedMoviesQuery} // поисковый запрос
+                onSearchSubmit={handleLocalSearch} // действие по кнопке Сабмит
+                moviesCheckboxState={moviesCheckboxStateSavedMovies} // состояние чекбокса
+                onCheckboxClick={handleCheckboxClickSavedMovies} // клик по чекбоксу
+                isLoading={isLoading}
+              />
+            </Route>
 
-                  moviesQuery={savedMoviesQuery} // поисковый запрос
-                  onSearchSubmit={handleLocalSearch} // действие по кнопке Сабмит
-                  moviesCheckboxState={moviesCheckboxStateSavedMovies} // состояние чекбокса
-                  onCheckboxClick={handleCheckboxClickSavedMovies} // клик по чекбоксу
-                />
-              </Route>
+            <Route path="/profile">
+              <Profile
+                onExit={handleExit}
+                onProfileUpdate={handleUpdateUserData}
+                errorFromBack={errorFromBack}
+                isLoading={isLoading}
+              />
+            </Route>
 
-              <Route path="/profile">
-                <Profile onExit={handleExit} onProfileUpdate={handleUpdateUserData} errorFromBack={errorFromBack} />
-              </Route>
+            <Route path="/signin">
+              <Login
+                onLogin={handleLogin}
+                errorFromBack={errorFromBack}
+                isLoading={isLoading}
+              />
+            </Route>
 
-              <Route path="/signin">
-                <Login onLogin={handleLogin} errorFromBack={errorFromBack} />
-              </Route>
+            <Route path="/signup">
+              <Register
+                onRegister={handleRegister}
+                errorFromBack={errorFromBack}
+                isLoading={isLoading}
+              />
+            </Route>
 
-              <Route path="/signup">
-                <Register onRegister={handleRegister} errorFromBack={errorFromBack} />
-              </Route>
+            <Route path="/notfound">
+              <NotFoundPage />
+            </Route>
 
-              <Route path="/notfound">
-                <NotFoundPage />
-              </Route>
-
-              <Route path="*">
-                {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
-              </Route>
-            </Switch>
-          }
+            <Route path="*">
+              {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
+            </Route>
+          </Switch>
+          {/* } */}
 
           <Footer />
         </div>

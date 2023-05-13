@@ -6,9 +6,8 @@ import "../AuthForm/AuthForm.css";
 
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 import { useFormWithValidation } from '../../utils/validationHook';
+import Preloader from '../Preloader/Preloader';
 
-
-// const isEditMode = true;
 
 function Profile(props) {
   const currentUser = React.useContext(CurrentUserContext);
@@ -18,14 +17,10 @@ function Profile(props) {
     email: currentUser.email,
   });
 
-
-  console.log('values.name ', values['name']);
-
-
   const [isEditMode, setIsEditMode] = React.useState(false);
 
   // ошибка, которая придет с сервера. Возможно, будет пропсом
-  const [isError, setIsError] = React.useState(false);
+  // const [isError, setIsError] = React.useState(false);
 
 
   function handleEditMode() {
@@ -50,66 +45,65 @@ function Profile(props) {
     <>
       <section className="profile">
         <h2 className="profile__title">Привет, {currentUser.name}</h2>
+        {props.isLoading ?
+          <Preloader /> :
+          <form className="profile__form" name="form__profile" id="id_form__profile" onSubmit={handleSubmit}>
+            <label className="profile__lable">
+              <span className="profile__lable-title">Имя</span>
+              <input
+                className="profile__input"
+                name="name"
+                type="text"
+                minLength="2"
+                maxLength="30"
+                required
+                pattern="[A-Za-zА-Яа-яЁё\s-]{2,30}"
+                disabled={isEditMode ? false : true}
+                value={values.name || ''}
+                onChange={handleChange}
+              />
+            </label>
+            {isEditMode && errors && (
+              <span className="profile__error-input">
+                {errors.name}
+              </span>
+            )}
 
-        <form className="profile__form" name="form__profile" id="id_form__profile" onSubmit={handleSubmit}>
-          <label className="profile__lable">
-            <span className="profile__lable-title">Имя</span>
-            <input
-              className="profile__input"
-              name="name"
-              type="text"
-              minLength="2"
-              maxLength="30"
-              required
-              // pattern="[]"
-              disabled={isEditMode ? false : true}
-              value={values.name || ''}
-              // value={isEditMode ? values.name : currentUser.name}
-
-              onChange={handleChange}
-            />
-          </label>
-          {isEditMode && errors && (
-            <span className="profile__error-input">
-              {errors.name}
-            </span>
-          )}
-
-          <label className="profile__lable">
-            <span className="profile__lable-title">E&#8209;mail</span>
-            <input
-              className="profile__input"
-              name="email"
-              type="email"
-              required
-              // pattern=""
-              disabled={isEditMode ? false : true}
-              value={values.email || ''}
-              onChange={handleChange}
-            />
-          </label>
-          {isEditMode && errors && (
-            <span className="profile__error-input">
-              {errors.email}
-            </span>
-          )}
-          {isEditMode && (<> {
-            props.errorFromBack &&
-            (<span className="profile__error">
-              {props.errMessage} При обновлении профиля произошла ошибка.
-            </span>)
-          }
-            <button
-              className={`auth-from__submit-button auth-from__submit-button_profile ${!isValid || (currentUser.name === values['name'] && currentUser.email === values['email']) ? "auth-from__submit-button_disabled" : ""}`}
-              type="submit"
-              form="id_form__profile"
-              disabled={!isValid || (currentUser.name === values['name'] && currentUser.email === values['email']) ? true : false}
-            >
-              Сохранить
-            </button>
-          </>
-          )}
-        </form>
+            <label className="profile__lable">
+              <span className="profile__lable-title">E&#8209;mail</span>
+              <input
+                className="profile__input"
+                name="email"
+                type="email"
+                required
+                disabled={isEditMode ? false : true}
+                value={values.email || ''}
+                onChange={handleChange}
+              />
+            </label>
+            {isEditMode && errors && (
+              <span className="profile__error-input">
+                {errors.email}
+              </span>
+            )}
+            {isEditMode && (<> {
+              props.errorFromBack &&
+              (<span className="profile__error">
+                {props.errMessage} При обновлении профиля произошла ошибка.
+              </span>)
+            }
+              <button
+                className={`auth-from__submit-button auth-from__submit-button_profile ${!isValid || (currentUser.name === values['name'] && currentUser.email === values['email']) ? "auth-from__submit-button_disabled" : ""}`}
+                type="submit"
+                form="id_form__profile"
+                disabled={!isValid || (currentUser.name === values['name'] && currentUser.email === values['email']) ? true : false}
+              >
+                Сохранить
+              </button>
+            </>
+            )}
+          </form>
+        }
 
         {!isEditMode && (
           (<>

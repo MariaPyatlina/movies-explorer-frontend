@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, Route } from 'react-router-dom';
 import AuthForm from '../AuthForm/AuthForm'
+import Preloader from '../Preloader/Preloader';
 import './Register.css';
 
 function Register(props) {
@@ -12,11 +13,16 @@ function Register(props) {
             Добро пожаловать!
           </h1>
         </Route>
-        <AuthForm
-          buttonTitle="Зарегистрироваться"
-          onRegister={props.onRegister}
-          errorFromBack={props.errorFromBack}
-        />
+
+        {props.isLoading ?
+          <Preloader /> :
+          <AuthForm
+            buttonTitle="Зарегистрироваться"
+            onRegister={props.onRegister}
+            errorFromBack={props.errorFromBack}
+          />
+        }
+
         <span className="register__login">
           Уже&nbsp;зарегистрированы?
           <Link to="/signin" className="register__login-link">Войти</Link>

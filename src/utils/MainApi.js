@@ -21,7 +21,7 @@ class Api {
     if (res.ok) {
       return res.json();
     }
-    else return Promise.reject(`Ошибка ${res.status, res.message}`);
+    else return Promise.reject(`Ошибка ${res.status, res.statusText}`);
   }
 
   // _parseAnswer(res) {
