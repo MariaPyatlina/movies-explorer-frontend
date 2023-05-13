@@ -38,7 +38,7 @@ function App() {
   const [movies, setMovies] = React.useState([]); // Карточки загруженные с внешнего сервера
   const [moviesLocal, setMoviesLocal] = React.useState([]); // Сохраненные карточки в seesionStorage
   const [fiteredMovies, setFileredMovies] = React.useState(getInitialStateForSearch('searchResult', 'filteredByDuration')); //Массив отфильтрованных фильмов на внешнем сервере
-  const [filteredMoviesToShow, setFilteredMoviesToShow] = React.useState((fiteredMovies || []).slice(0, initialCountParameters.showCount)); // TODO заменить на параметр в зависимости от ширины
+  const [filteredMoviesToShow, setFilteredMoviesToShow] = React.useState(null); // TODO заменить на параметр в зависимости от ширины
 
 
   const [savedMovies, setSavedMovies] = React.useState([]); // Фильмы. которые сохранены на внутреннем сервере
@@ -92,6 +92,7 @@ function App() {
 
     const handleResizeCount = () => {
       console.log('useEffect  - вычисляет размеры экрана');
+      console.log('fiteredMovies', fiteredMovies);
       const screenWidth = window.innerWidth;
       let size;
       if (screenWidth >= 1280) {
@@ -102,15 +103,18 @@ function App() {
       }
       else { size = { showCount: 5, addMoreCount: 2 } }
 
-
       console.log('size', size);
       setInitialCountParameters(size);
+
+      return size;
 
       // console.log('handleCount availableScreenWidth', screenWidth);
       console.log('initialCountParameters', initialCountParameters);
     }
 
-    handleResizeCount();
+    const size = handleResizeCount();
+
+    setFilteredMoviesToShow((fiteredMovies || []).slice(0, size.showCount));
     console.log(initialCountParameters);
 
     window.addEventListener('resize', handleResizeCount);
@@ -118,7 +122,7 @@ function App() {
     return () => {
       window.removeEventListener('resize', handleResizeCount);
     }
-  }, [])
+  }, [fiteredMovies])
 
 
   function handleRegister({ password, email, name }) {
