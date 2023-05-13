@@ -26,7 +26,7 @@ function App() {
   const getInitialStateForSearch = (field, key) => {
     const initialSearchParams = JSON.parse(localStorage.getItem(field));
 
-    if (initialSearchParams === null) { return '' }
+    if (initialSearchParams === null) { return null }
     else { return initialSearchParams[key] }
   }
 
@@ -49,11 +49,11 @@ function App() {
   const [isMovieSaved, setIsMovieSaved] = React.useState(false);
 
   // Для фильтрации и поиска
-  const [moviesQuery, setMoviesQuery] = React.useState(getInitialStateForSearch('searchParams', 'searchQuery'));
-  const [moviesCheckboxState, setMoviesCheckboxState] = React.useState(getInitialStateForSearch('searchParams', 'checkboxState'));
+  const [moviesQuery, setMoviesQuery] = React.useState(getInitialStateForSearch('searchParams', 'searchQuery') || '');
+  const [moviesCheckboxState, setMoviesCheckboxState] = React.useState(getInitialStateForSearch('searchParams', 'checkboxState') || false);
 
-  const [savedMoviesQuery, setSavedMoviesQuery] = React.useState(getInitialStateForSearch('localSearchParams', 'savedMoviesQuery'));
-  const [moviesCheckboxStateSavedMovies, setMoviesCheckboxStateSavedMovies] = React.useState(getInitialStateForSearch('localSearchParams', 'moviesCheckboxStateSavedMovies'));
+  const [savedMoviesQuery, setSavedMoviesQuery] = React.useState(getInitialStateForSearch('localSearchParams', 'savedMoviesQuery') || '');
+  const [moviesCheckboxStateSavedMovies, setMoviesCheckboxStateSavedMovies] = React.useState(getInitialStateForSearch('localSearchParams', 'moviesCheckboxStateSavedMovies') || false);
 
   // Регистрация и авторизация
   const [isLoggedIn, setIsLoggedIn] = React.useState(false); // Авторизован
