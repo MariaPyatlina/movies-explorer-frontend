@@ -14,6 +14,7 @@ import Preloader from '../Preloader/Preloader';
 
 import getMoviesCards from '../../utils/moviesApi';
 import mainApi from '../../utils/mainApi';
+import { handleError } from '../../utils/handleError';
 
 import { filterMovieByQuery, filterMovieByDuration } from '../../utils/filterMovie';
 
@@ -79,7 +80,11 @@ function App() {
           sessionStorage.setItem('localSavedMovies', JSON.stringify(savedMoviesData.data));
         })
         .catch(err => {
-          setErrorFromBack(err);
+          if (err.status !== 400) {
+            setErrorFromBack(handleError(err));
+          } else {
+            setErrorFromBack(`Ошибка при загрузке данных с сервера`);
+          }
           console.log(`Ошибка при загрузке данных с сервера ${err}`)
         });
     }
@@ -145,12 +150,14 @@ function App() {
         }
       })
       .catch((err) => {
-        setErrorFromBack(err);
-        console.log(`Ошибку поймал на 78й в app ${err}`, err.message);
+        if (err.status !== 400) {
+          setErrorFromBack(handleError(err));
+        } else {
+          setErrorFromBack(`При регистрации пользователя произошла ошибка ${err.statusText}`);
+        }
         console.log(`Ошибка ${err}`);
       })
       .finally(() => {
-        console.log('errorFromBack в ошиюке', errorFromBack);
         setIsLoading(false)
       });
   }
@@ -173,14 +180,22 @@ function App() {
             setCurrentUser(data);
           })
           .catch((err) => {
-            setErrorFromBack(err);
+            if (err.status !== 400) {
+              setErrorFromBack(handleError(err));
+            } else {
+              setErrorFromBack(`Ошибка при загрузке данных с сервера`);
+            }
             console.log(`Ошибка ${err}`)
           });
       })
       .catch((err) => {
         setIsLoggedIn(false);
         setIsLoading(false);
-        setErrorFromBack(err);
+        if (err.status !== 400) {
+          setErrorFromBack(handleError(err));
+        } else {
+          setErrorFromBack(`Вы ввели неправильный логин или пароль.`);
+        }
         console.log(`Ошибка ${err}`)
       })
       .finally(() => { setIsLoading(false) });
@@ -221,6 +236,11 @@ function App() {
       .catch(err => {
         setIsLoading(false);
         setErrorFromBack(err);
+        if (err.status !== 400) {
+          setErrorFromBack(handleError(err));
+        } else {
+          setErrorFromBack(`При обновлении профиля произошла ошибка`);
+        }
         console.log(`Ошибка ${err}`)
         return err
       })
@@ -301,8 +321,9 @@ function App() {
         setSavedMovies([newMovie, ...savedMovies]);
       })
       .catch(err => {
-        setErrorFromBack(err.message);
-        console.log(err.message);
+        setErrorFromBack(err.statusText);
+        alert(`При сохранении фильма произошла ошибка ${err.statusText}`);
+        console.log(err);
       })
       .finally(() => setIsLoading(false));
   }
@@ -317,8 +338,9 @@ function App() {
         setSavedMovies(savedMovies => savedMovies.filter(film => film._id !== savedMovieForDelete._id))
       })
       .catch(err => {
-        setErrorFromBack(err.message);
-        console.log(err.message);
+        setErrorFromBack(err.statusText);
+        alert(`При удалении фильма произошла ошибка ${err.statusText}`);
+        console.log(err);
       })
       .finally(() => setIsLoading(false));
   }
@@ -332,8 +354,9 @@ function App() {
         setSavedMovies(savedMovies => savedMovies.filter(film => film._id !== movie._id))
       })
       .catch(err => {
-        setErrorFromBack(err.message);
-        console.log(err.message);
+        setErrorFromBack(err.statusText);
+        alert(`При удалении фильма произошла ошибка ${err.statusText}`);
+        console.log(err);
       })
       .finally(() => setIsLoading(false));
   }
