@@ -375,45 +375,44 @@ function App() {
               <Main />
             </Route>
 
-            <Route path="/movies">
-              <Movies
-                // movies={fiteredMovies}
-                movies={filteredMoviesToShow}
-                savedMovies={savedMovies} // Массив сохраненных фильмов
-                isMovieSaved={isMovieSaved}
-                onAddMovie={handleAddMovieToSave}
-                onRemoveMovie={handleRemovedMovie}
-                moviesQuery={moviesQuery}
-                onSearchSubmit={handleSearchMovies}
-                moviesCheckboxState={moviesCheckboxState}
-                onCheckboxClick={handleCheckboxClick}
-                errorFromBack={errorFromBack}
-                isLoading={isLoading}
-                onMoreClick={handleMoreClick}
-                isMoreButtonShown={isMoreButtonShown}
-              />
-            </Route>
+            <ProtectedRoute path="/movies"
+              isLoggedIn={isLoggedIn}
+              component={Movies}
+              movies={filteredMoviesToShow}
+              savedMovies={savedMovies} // Массив сохраненных фильмов
+              isMovieSaved={isMovieSaved}
+              onAddMovie={handleAddMovieToSave}
+              onRemoveMovie={handleRemovedMovie}
+              moviesQuery={moviesQuery}
+              onSearchSubmit={handleSearchMovies}
+              moviesCheckboxState={moviesCheckboxState}
+              onCheckboxClick={handleCheckboxClick}
+              errorFromBack={errorFromBack}
+              isLoading={isLoading}
+              onMoreClick={handleMoreClick}
+              isMoreButtonShown={isMoreButtonShown}
+            />
 
-            <Route path="/saved-movies">
-              <SavedMovies
-                savedMovies={filteredSavedMovies}  // Отфильтрованые Сохраненные фильмы
-                onRemoveSavedMovie={handleRemoveSavedMovie} // удаление из избранного
-                moviesQuery={savedMoviesQuery} // поисковый запрос
-                onSearchSubmit={handleLocalSearch} // действие по кнопке Сабмит
-                moviesCheckboxState={moviesCheckboxStateSavedMovies} // состояние чекбокса
-                onCheckboxClick={handleCheckboxClickSavedMovies} // клик по чекбоксу
-                isLoading={isLoading}
-              />
-            </Route>
+            <ProtectedRoute path="/saved-movies"
+              isLoggedIn={isLoggedIn}
+              component={SavedMovies}
+              savedMovies={filteredSavedMovies}  // Отфильтрованые Сохраненные фильмы
+              onRemoveSavedMovie={handleRemoveSavedMovie} // удаление из избранного
+              moviesQuery={savedMoviesQuery} // поисковый запрос
+              onSearchSubmit={handleLocalSearch} // действие по кнопке Сабмит
+              moviesCheckboxState={moviesCheckboxStateSavedMovies} // состояние чекбокса
+              onCheckboxClick={handleCheckboxClickSavedMovies} // клик по чекбоксу
+              isLoading={isLoading}
+            />
 
-            <Route path="/profile">
-              <Profile
-                onExit={handleExit}
-                onProfileUpdate={handleUpdateUserData}
-                errorFromBack={errorFromBack}
-                isLoading={isLoading}
-              />
-            </Route>
+            <ProtectedRoute path="/profile"
+              isLoggedIn={isLoggedIn}
+              component={Profile}
+              onExit={handleExit}
+              onProfileUpdate={handleUpdateUserData}
+              errorFromBack={errorFromBack}
+              isLoading={isLoading}
+            />
 
             <Route path="/signin">
               <Login

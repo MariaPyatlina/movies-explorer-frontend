@@ -1,6 +1,5 @@
 import './SearchForm.css';
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 
 function SearchForm(props) {
   const [searchQuery, setSearchQuery] = React.useState(props.moviesQuery);
@@ -11,8 +10,6 @@ function SearchForm(props) {
 
   const handleSearchSubmit = (evt) => {
     evt.preventDefault();
-    console.log('searchQuery', searchQuery);
-    console.log('Нажали Найти');
 
     if (searchQuery === '') {
       alert('Нужно ввести ключевое слово');
@@ -20,8 +17,6 @@ function SearchForm(props) {
     else {
       props.onSearchSubmit(searchQuery, props.moviesCheckboxState);
     }
-
-
   }
 
 
@@ -52,7 +47,6 @@ function SearchForm(props) {
           Найти
         </button>
       </form>
-
     </>
 
   )
