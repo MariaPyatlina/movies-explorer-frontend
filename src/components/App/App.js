@@ -232,6 +232,7 @@ function App() {
       .then((data) => {
         setCurrentUser(data);
         setErrorFromBack('');
+        alert("Изменения сохранены успешно");
       })
       .catch(err => {
         setIsLoading(false);

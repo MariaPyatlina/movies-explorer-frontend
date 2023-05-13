@@ -27,7 +27,6 @@ function MoviesCardList(props) {
                             savedMovies={props.savedMovies}
                             onAddMovie={props.onAddMovie}
                             onRemoveMovie={props.onRemoveMovie}
-                          // isMovieSaved={props.isMovieSaved}
                           />
                         )
                       })}
