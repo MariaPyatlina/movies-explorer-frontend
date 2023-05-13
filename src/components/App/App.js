@@ -114,8 +114,12 @@ function App() {
 
     const size = handleResizeCount();
 
-    setFilteredMoviesToShow((fiteredMovies || []).slice(0, size.showCount));
-    console.log(initialCountParameters);
+    if (fiteredMovies !== null) {
+      setFilteredMoviesToShow(fiteredMovies.slice(0, size.showCount));
+      console.log(initialCountParameters);
+    }
+
+
 
     window.addEventListener('resize', handleResizeCount);
 
