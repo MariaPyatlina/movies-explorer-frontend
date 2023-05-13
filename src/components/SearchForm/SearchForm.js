@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 
 function SearchForm(props) {
   const location = useLocation();
-  const [searchQuery, setSearchQuery] = React.useState(props.moviesQuery); // исходно запрос пустой
+  const [searchQuery, setSearchQuery] = React.useState(props.moviesQuery);
 
   const handleSearchQueryChange = (evt) => {
     setSearchQuery(evt.target.value);
@@ -15,7 +15,14 @@ function SearchForm(props) {
     console.log('searchQuery', searchQuery);
     console.log('Нажали Найти');
 
-    props.onSearchSubmit(searchQuery, props.moviesCheckboxState);
+    if (searchQuery === '') {
+      alert('Нужно ввести ключевое слово');
+    }
+    else {
+      props.onSearchSubmit(searchQuery, props.moviesCheckboxState);
+    }
+
+
   }
 
 
