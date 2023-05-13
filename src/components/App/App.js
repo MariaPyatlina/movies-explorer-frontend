@@ -34,11 +34,15 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({});
 
 
-  const [movies, setMovies] = React.useState([]); // Карточки загруженные с сервера
+  const [movies, setMovies] = React.useState([]); // Карточки загруженные с внешнего сервера
   const [moviesLocal, setMoviesLocal] = React.useState([]); // Сохраненные карточеки в seesionStorage
-  const [fiteredMovies, setFileredMovies] = React.useState([]); //Массив отфильтрованных фильмов
-  const [savedMovies, setSavedMovies] = React.useState([]); // Фильмы. которые сохранил себе пользователь
-  const [filteredSavedMovies, setfilteredSavedMovies] = React.useState([]); // Фильмы. которые сохранил себе пользователь
+  const [fiteredMovies, setFileredMovies] = React.useState(getInitialStateForSearch('searchResult', 'filteredByDuration')); //Массив отфильтрованных фильмов на внешнем сервере
+
+  // localStorage.setItem('searchResult', JSON.stringify(filteredByDuration));
+
+
+  const [savedMovies, setSavedMovies] = React.useState([]); // Фильмы. которые сохранены на внутреннем сервере
+  const [filteredSavedMovies, setfilteredSavedMovies] = React.useState(getInitialStateForSearch('localSearchResult', 'filteredByDuration')); // Фильмы. которые отфильтровал на внутреннем сервере
 
   const [isLoading, setIsLoading] = React.useState(false); // Чтобы показывать прелоадер на время загрузки
   const [shotMoviesOn, isShotMoviesOn] = React.useState(false);  //
@@ -46,8 +50,9 @@ function App() {
 
   // Для фильтрации и поиска
   const [moviesQuery, setMoviesQuery] = React.useState(getInitialStateForSearch('searchParams', 'searchQuery'));
-  const [savedMoviesQuery, setSavedMoviesQuery] = React.useState(getInitialStateForSearch('localSearchParams', 'savedMoviesQuery'));
   const [moviesCheckboxState, setMoviesCheckboxState] = React.useState(getInitialStateForSearch('searchParams', 'checkboxState'));
+
+  const [savedMoviesQuery, setSavedMoviesQuery] = React.useState(getInitialStateForSearch('localSearchParams', 'savedMoviesQuery'));
   const [moviesCheckboxStateSavedMovies, setMoviesCheckboxStateSavedMovies] = React.useState(getInitialStateForSearch('localSearchParams', 'moviesCheckboxStateSavedMovies'));
 
   // Регистрация и авторизация
@@ -201,6 +206,8 @@ function App() {
     const filteredByQuery = filterMovieByQuery(moviesArray, searchQuery);
     const filteredByDuration = filterMovieByDuration(filteredByQuery, checkboxState);
 
+    localStorage.setItem('searchResult', JSON.stringify({ filteredByDuration }));
+
     return setFileredMovies(filteredByDuration);
   }
 
@@ -212,6 +219,8 @@ function App() {
     localStorage.setItem('localSearchParams', JSON.stringify({ savedMoviesQuery, moviesCheckboxStateSavedMovies }));
     const filteredByQuery = filterMovieByQuery(currentSavedMovie, savedMoviesQuery);
     const filteredByDuration = filterMovieByDuration(filteredByQuery, moviesCheckboxStateSavedMovies);
+
+    localStorage.setItem('localSearchResult', JSON.stringify({ filteredByDuration }));
 
     return setfilteredSavedMovies(filteredByDuration);
   }
