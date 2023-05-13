@@ -5,16 +5,11 @@ import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Preloader from '../Preloader/Preloader';
 
 function Movies(props) {
-  // console.log('фильмы для отображения', props.movies);
-
-
 
   const handleMoreClick = (evt) => {
     evt.preventDefault();
     props.onMoreClick(props.movies);
   }
-
-
 
   return (
     <>
@@ -40,15 +35,12 @@ function Movies(props) {
         <button
           // className={`movies-cards__button-more ${props.movies ? "movies-cards__button-more_hidden" : ""}`}
           className={`movies-cards__button-more `}
-
           type="button"
           onClick={handleMoreClick}
         >
           Ещё
         </button>
       )}
-
-
     </>
 
   )

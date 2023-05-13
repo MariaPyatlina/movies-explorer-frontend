@@ -32,10 +32,13 @@ function App() {
 
   const [currentUser, setCurrentUser] = React.useState({});
 
+  const [initialCountParameters, setInitialCountParameters] = React.useState({ showCount: 0, addMoreCount: 0 });
+  const [screenWidth, setScreenWidth] = React.useState(100);
+
   const [movies, setMovies] = React.useState([]); // Карточки загруженные с внешнего сервера
   const [moviesLocal, setMoviesLocal] = React.useState([]); // Сохраненные карточки в seesionStorage
   const [fiteredMovies, setFileredMovies] = React.useState(getInitialStateForSearch('searchResult', 'filteredByDuration')); //Массив отфильтрованных фильмов на внешнем сервере
-  const [filteredMoviesToShow, setFilteredMoviesToShow] = React.useState((fiteredMovies || []).slice(0, 3)); // TODO заменить на параметр в зависимости от ширины
+  const [filteredMoviesToShow, setFilteredMoviesToShow] = React.useState((fiteredMovies || []).slice(0, initialCountParameters.showCount)); // TODO заменить на параметр в зависимости от ширины
 
 
   const [savedMovies, setSavedMovies] = React.useState([]); // Фильмы. которые сохранены на внутреннем сервере
@@ -62,6 +65,9 @@ function App() {
 
 
 
+
+
+
   //Получение данных о пользователе и сохраненных фильмах
   React.useEffect(() => {
     if (isLoggedIn) {
@@ -81,6 +87,38 @@ function App() {
   React.useEffect(() => {
     checkToken();
   }, []);
+
+  React.useEffect(() => {
+
+    const handleResizeCount = () => {
+      console.log('useEffect  - вычисляет размеры экрана');
+      const screenWidth = window.innerWidth;
+      let size;
+      if (screenWidth >= 1280) {
+        size = { showCount: 12, addMoreCount: 3 }
+      }
+      else if (screenWidth > 480) {
+        size = { showCount: 8, addMoreCount: 2 }
+      }
+      else { size = { showCount: 5, addMoreCount: 2 } }
+
+
+      console.log('size', size);
+      setInitialCountParameters(size);
+
+      // console.log('handleCount availableScreenWidth', screenWidth);
+      console.log('initialCountParameters', initialCountParameters);
+    }
+
+    handleResizeCount();
+    console.log(initialCountParameters);
+
+    window.addEventListener('resize', handleResizeCount);
+
+    return () => {
+      window.removeEventListener('resize', handleResizeCount);
+    }
+  }, [])
 
 
   function handleRegister({ password, email, name }) {
@@ -218,12 +256,11 @@ function App() {
 
     setFileredMovies(filteredByDuration);
 
-    const moviesToDisplayArr = filteredByDuration.slice(0, 3);
+    const moviesToDisplayArr = filteredByDuration.slice(0, initialCountParameters.showCount);
     setFilteredMoviesToShow(moviesToDisplayArr);
     if (moviesToDisplayArr.length !== filteredByDuration.length) {
       setIsMoreButtonShown(true);
     }
-
   }
 
   // Поиск по сохраненным фильмам
@@ -296,43 +333,15 @@ function App() {
   }
 
 
-  const [initialCountParameters, setInitialCountParameters] = React.useState({ showCount: 0, addMoreCount: 0 });
-
-
-  useEffect(() => {
-    const handleResizeCount = () => {
-      const screenWidth = window.innerWidth;
-
-      if (screenWidth >= 1280) {
-        setInitialCountParameters({ showCount: 12, addMoreCount: 3 })
-      }
-      else if (screenWidth > 480) {
-        setInitialCountParameters({ showCount: 8, addMoreCount: 2 })
-      }
-      else { setInitialCountParameters({ showCount: 5, addMoreCount: 2 }) }
-
-      console.log('handleCount availableScreenWidth', screenWidth);
-      console.log('initialCountParameters', initialCountParameters);
-    }
-
-    handleResizeCount();
-
-    window.addEventListener('resize', handleResizeCount);
-
-    return () => {
-      window.removeEventListener('resize', handleResizeCount);
-    }
-
-  }, [])
+  // initialCountParameters = { showCount: 0, addMoreCount: 0 }
 
   // Пересчитывает массив для отрисовки
   const handleMoreClick = () => {
-    // if (filteredMoviesToShow.length <= )
     console.log('filteredMoviesToShow', filteredMoviesToShow);
     const shownIndex = filteredMoviesToShow.length;
     console.log('shownIndex', shownIndex);
 
-    const addedMoviesArray = fiteredMovies.slice(0, shownIndex + 3);
+    const addedMoviesArray = fiteredMovies.slice(0, shownIndex + initialCountParameters.addMoreCount);
 
     if (addedMoviesArray.length === fiteredMovies.length) {
       setIsMoreButtonShown(false);
@@ -341,8 +350,6 @@ function App() {
     console.log('filteredMoviesToShow', addedMoviesArray);
 
     setFilteredMoviesToShow(addedMoviesArray);
-
-
   }
 
 
