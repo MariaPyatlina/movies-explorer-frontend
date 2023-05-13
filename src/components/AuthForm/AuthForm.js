@@ -7,10 +7,6 @@ function AuthForm(props) {
   const location = useLocation();
   const { values, handleChange, errors, isValid } = useFormWithValidation({});
 
-  console.log('errors', errors);
-
-  // ошибка, которая придет с сервера. Возможно, будет пропсом
-  // const [isError, setIsError] = React.useState(false);
   console.log('errorFromBack в форме регистрации', props.errorFromBack);
 
 
@@ -82,7 +78,7 @@ function AuthForm(props) {
 
       {props.errorFromBack && (
         <span className="profile__error">
-          {props.errMessage}
+          {props.errorFromBack}
         </span>
       )}
 

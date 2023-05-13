@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, Redirect, Switch, useHistory } from 'react-router-dom';
+import { Route, Redirect, Switch, useHistory, useLocation } from 'react-router-dom';
 import './App.css';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
@@ -61,6 +61,7 @@ function App() {
   const [errorFromBack, setErrorFromBack] = React.useState('');
 
   const history = useHistory();
+  const location = useLocation();
 
 
 
@@ -87,6 +88,11 @@ function App() {
   React.useEffect(() => {
     checkToken();
   }, []);
+
+  React.useEffect(() => {
+    setErrorFromBack('');
+  }, [location]);
+
 
   React.useEffect(() => {
 
@@ -167,14 +173,14 @@ function App() {
             setCurrentUser(data);
           })
           .catch((err) => {
-            setErrorFromBack(err.message);
+            setErrorFromBack(err);
             console.log(`Ошибка ${err}`)
           });
       })
       .catch((err) => {
         setIsLoggedIn(false);
         setIsLoading(false);
-        setErrorFromBack(err.message);
+        setErrorFromBack(err);
         console.log(`Ошибка ${err}`)
       })
       .finally(() => { setIsLoading(false) });
@@ -207,15 +213,16 @@ function App() {
 
   function handleUpdateUserData({ email, name }) {
     setIsLoading(true);
-    mainApi.setUserData({ email, name })
+    return mainApi.setUserData({ email, name })
       .then((data) => {
-        console.log('ata', data);
         setCurrentUser(data);
+        setErrorFromBack('');
       })
       .catch(err => {
         setIsLoading(false);
-        setErrorFromBack(err.message);
+        setErrorFromBack(err);
         console.log(`Ошибка ${err}`)
+        return err
       })
       .finally(() => {
         setIsLoading(false)

@@ -32,8 +32,13 @@ function Profile(props) {
     props.onProfileUpdate({
       email: values.email,
       name: values.name
-    });
-    setIsEditMode(false);
+    })
+      .then((err) => {
+        console.log('rops.errorFromBack', props.errorFromBack);
+        if (!err) setIsEditMode(false);
+      });
+
+    // if (!props.errorFromBack) setIsEditMode(false);
   }
 
   // Разлогин
@@ -89,7 +94,7 @@ function Profile(props) {
             {isEditMode && (<> {
               props.errorFromBack &&
               (<span className="profile__error">
-                {props.errMessage} При обновлении профиля произошла ошибка.
+                {props.errorFromBack}
               </span>)
             }
               <button
