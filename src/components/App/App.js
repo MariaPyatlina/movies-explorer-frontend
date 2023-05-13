@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Redirect, Switch, useHistory } from 'react-router-dom';
 import './App.css';
 import Header from '../Header/Header';
@@ -33,8 +33,10 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({});
 
   const [movies, setMovies] = React.useState([]); // Карточки загруженные с внешнего сервера
-  const [moviesLocal, setMoviesLocal] = React.useState([]); // Сохраненные карточеки в seesionStorage
+  const [moviesLocal, setMoviesLocal] = React.useState([]); // Сохраненные карточки в seesionStorage
   const [fiteredMovies, setFileredMovies] = React.useState(getInitialStateForSearch('searchResult', 'filteredByDuration')); //Массив отфильтрованных фильмов на внешнем сервере
+  const [filteredMoviesToShow, setFilteredMoviesToShow] = React.useState((fiteredMovies || []).slice(0, 3)); // TODO заменить на параметр в зависимости от ширины
+
 
   const [savedMovies, setSavedMovies] = React.useState([]); // Фильмы. которые сохранены на внутреннем сервере
   const [filteredSavedMovies, setfilteredSavedMovies] = React.useState(getInitialStateForSearch('localSearchResult', 'filteredByDuration')); // Фильмы. которые отфильтровал на внутреннем сервере
@@ -42,6 +44,7 @@ function App() {
   const [isLoading, setIsLoading] = React.useState(false); // Чтобы показывать прелоадер на время загрузки
   const [shotMoviesOn, isShotMoviesOn] = React.useState(false);  //
   const [isMovieSaved, setIsMovieSaved] = React.useState(false);
+  const [isMoreButtonShown, setIsMoreButtonShown] = React.useState(false);
 
   // Для фильтрации и поиска
   const [moviesQuery, setMoviesQuery] = React.useState(getInitialStateForSearch('searchParams', 'searchQuery') || '');
@@ -168,7 +171,9 @@ function App() {
         setErrorFromBack(err.message);
         console.log(`Ошибка ${err}`)
       })
-      .finally(() => setIsLoading(false))
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
 
   const handleSearchMovies = (searchQuery, moviesCheckboxState) => { // сюда же должен прийти состояние чекбокса
@@ -183,8 +188,8 @@ function App() {
         .then((moviesData) => {
           sessionStorage.setItem('movies', JSON.stringify(moviesData));
           setMovies(moviesData);
-          // setMoviesLocal(moviesData);
           filterMoviesBySearchQueryAndCheckboxState(moviesData, searchQuery, moviesCheckboxState);
+
         })
         .catch(err => {
           setErrorFromBack(err.message);
@@ -192,9 +197,7 @@ function App() {
         })
         .finally(() => {
           setIsLoading(false)
-        }
-        );
-
+        })
     }
     else {
       setMovies(localSavedMovies);
@@ -203,7 +206,7 @@ function App() {
     }
   }
 
-
+  // Поиск по всем фильмам
   const filterMoviesBySearchQueryAndCheckboxState = (moviesArray, searchQuery, checkboxState) => {
     console.log('фильтрую. Начальные данные', moviesArray, searchQuery, checkboxState);
 
@@ -213,10 +216,17 @@ function App() {
 
     localStorage.setItem('searchResult', JSON.stringify({ filteredByDuration }));
 
-    return setFileredMovies(filteredByDuration);
+    setFileredMovies(filteredByDuration);
+
+    const moviesToDisplayArr = filteredByDuration.slice(0, 3);
+    setFilteredMoviesToShow(moviesToDisplayArr);
+    if (moviesToDisplayArr.length !== filteredByDuration.length) {
+      setIsMoreButtonShown(true);
+    }
+
   }
 
-  // //Поиск по сохраненным фильмам
+  // Поиск по сохраненным фильмам
   const handleLocalSearch = (savedMoviesQuery, moviesCheckboxStateSavedMovies) => {
     const currentSavedMovie = JSON.parse(sessionStorage.getItem('localSavedMovies'));
     setSavedMoviesQuery(savedMoviesQuery);
@@ -230,7 +240,6 @@ function App() {
 
     return setfilteredSavedMovies(filteredByDuration);
   }
-
 
   // Сохраняет фильм на сервере
   const handleAddMovieToSave = (movie) => {
@@ -277,7 +286,7 @@ function App() {
       .finally(() => setIsLoading(false));
   }
 
-
+  // Запомнинает состояние чекбоксов
   const handleCheckboxClick = (currentChekboxState) => {
     setMoviesCheckboxState(currentChekboxState);
   }
@@ -285,6 +294,59 @@ function App() {
   const handleCheckboxClickSavedMovies = (currentChekboxState) => {
     setMoviesCheckboxStateSavedMovies(currentChekboxState);
   }
+
+
+  const [initialCountParameters, setInitialCountParameters] = React.useState({ showCount: 0, addMoreCount: 0 });
+
+
+  useEffect(() => {
+    const handleResizeCount = () => {
+      const screenWidth = window.innerWidth;
+
+      if (screenWidth >= 1280) {
+        setInitialCountParameters({ showCount: 12, addMoreCount: 3 })
+      }
+      else if (screenWidth > 480) {
+        setInitialCountParameters({ showCount: 8, addMoreCount: 2 })
+      }
+      else { setInitialCountParameters({ showCount: 5, addMoreCount: 2 }) }
+
+      console.log('handleCount availableScreenWidth', screenWidth);
+      console.log('initialCountParameters', initialCountParameters);
+    }
+
+    handleResizeCount();
+
+    window.addEventListener('resize', handleResizeCount);
+
+    return () => {
+      window.removeEventListener('resize', handleResizeCount);
+    }
+
+  }, [])
+
+  // Пересчитывает массив для отрисовки
+  const handleMoreClick = () => {
+    // if (filteredMoviesToShow.length <= )
+    console.log('filteredMoviesToShow', filteredMoviesToShow);
+    const shownIndex = filteredMoviesToShow.length;
+    console.log('shownIndex', shownIndex);
+
+    const addedMoviesArray = fiteredMovies.slice(0, shownIndex + 3);
+
+    if (addedMoviesArray.length === fiteredMovies.length) {
+      setIsMoreButtonShown(false);
+    }
+
+    console.log('filteredMoviesToShow', addedMoviesArray);
+
+    setFilteredMoviesToShow(addedMoviesArray);
+
+
+  }
+
+
+
 
 
   return (
@@ -300,7 +362,8 @@ function App() {
 
             <Route path="/movies">
               <Movies
-                movies={fiteredMovies}
+                // movies={fiteredMovies}
+                movies={filteredMoviesToShow}
                 savedMovies={savedMovies} // Массив сохраненных фильмов
                 isMovieSaved={isMovieSaved}
                 onAddMovie={handleAddMovieToSave}
@@ -311,6 +374,8 @@ function App() {
                 onCheckboxClick={handleCheckboxClick}
                 errorFromBack={errorFromBack}
                 isLoading={isLoading}
+                onMoreClick={handleMoreClick}
+                isMoreButtonShown={isMoreButtonShown}
               />
             </Route>
 

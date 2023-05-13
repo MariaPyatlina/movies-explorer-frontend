@@ -41,7 +41,6 @@ function AuthForm(props) {
       id="auth-form-id"
       noValidate
       onSubmit={(location.pathname === "/signup" ? handleSubmitRegister : handleSubmitLogin)}
-      action="#"
     >
       <Route path="/signup" className="link">
         <span className="auth-from__input-lable">Имя</span>
@@ -63,7 +62,7 @@ function AuthForm(props) {
         className="auth-from__input"
         type="email"
         name="email"
-        // required
+        required
         value={values.email || ''}
         onChange={handleChange}
       />

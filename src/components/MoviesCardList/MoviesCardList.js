@@ -6,14 +6,13 @@ import './MoviesCardList.css';
 
 function MoviesCardList(props) {
   const location = useLocation();
-  console.log('isLoading={props.isLoading}', props.isLoading);
+
+
 
   return (
     <>
       <section className="movies-cards">
-
         <div className="movies-card__list">
-
           {(props.movies == null) ? <></> :
             <>
               {location.pathname === '/movies' && (
@@ -58,7 +57,6 @@ function MoviesCardList(props) {
                   </>
                 }
                 </>
-
               )}
             </>
           }

@@ -1,10 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import './Movies';
 import SearchBlock from '../SearchBlock/SearchBlock';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Preloader from '../Preloader/Preloader';
 
 function Movies(props) {
+  // console.log('фильмы для отображения', props.movies);
+
+
+
+  const handleMoreClick = (evt) => {
+    evt.preventDefault();
+    props.onMoreClick(props.movies);
+  }
+
+
 
   return (
     <>
@@ -26,8 +36,18 @@ function Movies(props) {
         />}
 
 
+      {props.isMoreButtonShown && (
+        <button
+          // className={`movies-cards__button-more ${props.movies ? "movies-cards__button-more_hidden" : ""}`}
+          className={`movies-cards__button-more `}
 
-      {/* <button className={`movies-cards__button-more ${props.movies ? "movies-cards__button-more_hidden" : ""}`} type="button">Ещё</button> */}
+          type="button"
+          onClick={handleMoreClick}
+        >
+          Ещё
+        </button>
+      )}
+
 
     </>
 
