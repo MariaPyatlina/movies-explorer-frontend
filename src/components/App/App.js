@@ -307,11 +307,11 @@ function App() {
 
   // Поиск по сохраненным фильмам
   const handleLocalSearch = (savedMoviesQuery, moviesCheckboxStateSavedMovies) => {
-    const currentSavedMovie = JSON.parse(sessionStorage.getItem('localSavedMovies'));
+    // const currentSavedMovie = JSON.parse(sessionStorage.getItem('localSavedMovies'));
     setSavedMoviesQuery(savedMoviesQuery);
 
     localStorage.setItem('localSearchParams', JSON.stringify({ savedMoviesQuery, moviesCheckboxStateSavedMovies }));
-    const filteredByQuery = filterMovieByQuery(currentSavedMovie, savedMoviesQuery);
+    const filteredByQuery = filterMovieByQuery(savedMovies, savedMoviesQuery);
     const filteredByDuration = filterMovieByDuration(filteredByQuery, moviesCheckboxStateSavedMovies);
 
     localStorage.setItem('localSearchResult', JSON.stringify({ filteredByDuration }));
