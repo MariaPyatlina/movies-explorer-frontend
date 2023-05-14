@@ -7,8 +7,6 @@ import './MoviesCardList.css';
 function MoviesCardList(props) {
   const location = useLocation();
 
-
-
   return (
     <>
       <section className="movies-cards">

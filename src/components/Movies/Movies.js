@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import './Movies';
 import SearchBlock from '../SearchBlock/SearchBlock';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
@@ -33,7 +33,6 @@ function Movies(props) {
 
       {props.isMoreButtonShown && (
         <button
-          // className={`movies-cards__button-more ${props.movies ? "movies-cards__button-more_hidden" : ""}`}
           className={`movies-cards__button-more `}
           type="button"
           onClick={handleMoreClick}

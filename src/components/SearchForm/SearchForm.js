@@ -19,7 +19,6 @@ function SearchForm(props) {
     }
   }
 
-
   return (
     <>
       <form

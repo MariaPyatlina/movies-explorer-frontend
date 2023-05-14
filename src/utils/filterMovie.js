@@ -7,7 +7,6 @@ export const filterMovieByQuery = (movieArray, query) => {
   return filteredByQueryArray;
 }
 
-
 export const filterMovieByDuration = (movieArray, checkboxState) => {
   if (checkboxState) {
     let filteredMoviesByDurationArray = movieArray.filter((film) => {

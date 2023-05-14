@@ -1,20 +1,17 @@
 import React from "react";
-import { Route, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import './MoviesCard.css';
 import { EXTERNAL_API_URL } from '../../utils/constants';
 
 function MoviesCard(props) {
   const location = useLocation();
 
-
-  // const [isMovieSaved, setIsMovieSaved] = React.useState(false);
-
   // Добавлена ли карточка в сохранённые ?
   const isMovieSaved = props.savedMovies.some(movie => movie.movieId === props.movie.id);
 
   function handleAddMovie(evt) {
     evt.preventDefault();
-    console.log('savedMovies handleAddMovie', props.savedMovies, props.movie);
+
     const isMovieAlradySaved = props.savedMovies.find(savedMovie => savedMovie.movieId === props.movie.id);
 
     if (isMovieAlradySaved === undefined) {
@@ -79,7 +76,6 @@ function MoviesCard(props) {
             >
             </button>
           }
-
         </div>
       </div>
     </>

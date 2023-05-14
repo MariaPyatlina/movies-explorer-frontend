@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Route, Redirect, Switch, useHistory, useLocation } from 'react-router-dom';
 import './App.css';
 import Header from '../Header/Header';
@@ -30,23 +30,18 @@ function App() {
     else { return initialSearchParams[key] }
   }
 
-
   const [currentUser, setCurrentUser] = React.useState({});
 
   const [initialCountParameters, setInitialCountParameters] = React.useState({ showCount: 0, addMoreCount: 0 });
-  const [screenWidth, setScreenWidth] = React.useState(100);
 
   const [movies, setMovies] = React.useState(JSON.parse(sessionStorage.getItem('movies')) || []); // Карточки загруженные с внешнего сервера
-  const [moviesLocal, setMoviesLocal] = React.useState([]); // Сохраненные карточки в seesionStorage
   const [fiteredMovies, setFileredMovies] = React.useState(getInitialStateForSearch('searchResult', 'filteredByDuration')); //Массив отфильтрованных фильмов на внешнем сервере
   const [filteredMoviesToShow, setFilteredMoviesToShow] = React.useState(null); // TODO заменить на параметр в зависимости от ширины
-
 
   const [savedMovies, setSavedMovies] = React.useState([]); // Фильмы. которые сохранены на внутреннем сервере
   const [filteredSavedMovies, setfilteredSavedMovies] = React.useState(getInitialStateForSearch('localSearchResult', 'filteredByDuration')); // Фильмы. которые отфильтровал на внутреннем сервере
 
   const [isLoading, setIsLoading] = React.useState(false); // Чтобы показывать прелоадер на время загрузки
-  const [shotMoviesOn, isShotMoviesOn] = React.useState(false);  //
   const [isMovieSaved, setIsMovieSaved] = React.useState(false);
   const [isMoreButtonShown, setIsMoreButtonShown] = React.useState(false);
 
@@ -63,12 +58,6 @@ function App() {
 
   const history = useHistory();
   const location = useLocation();
-
-
-
-
-
-
 
   //Получение данных о пользователе и сохраненных фильмах
   React.useEffect(() => {
@@ -105,8 +94,6 @@ function App() {
   React.useEffect(() => {
 
     const handleResizeCount = () => {
-      console.log('useEffect  - вычисляет размеры экрана');
-      console.log('fiteredMovies', fiteredMovies);
       const screenWidth = window.innerWidth;
       let size;
       if (screenWidth >= 1280) {
@@ -117,7 +104,6 @@ function App() {
       }
       else { size = { showCount: 5, addMoreCount: 2 } }
 
-      console.log('size', size);
       setInitialCountParameters(size);
 
       return size;
@@ -134,9 +120,6 @@ function App() {
         setIsMoreButtonShown(true);
       }
     }
-
-
-
 
     window.addEventListener('resize', handleResizeCount);
 
@@ -219,7 +202,7 @@ function App() {
           }
         })
         .catch(err => {
-          setErrorFromBack(err.message);
+          setErrorFromBack(err.statusText);
           console.log(`Ошибка ${err}`);
         });
     }
@@ -256,24 +239,22 @@ function App() {
       })
   }
 
-  const handleSearchMovies = (searchQuery, moviesCheckboxState) => { // сюда же должен прийти состояние чекбокса
+  const handleSearchMovies = (searchQuery, moviesCheckboxState) => {
     // Проверяем, что лежит локально
     let localSavedMovies = JSON.parse(sessionStorage.getItem('movies'));
     setMoviesQuery(searchQuery);
 
     if (localSavedMovies === null || localSavedMovies === undefined || localSavedMovies === []) {
-      console.log('2. Локально пусто. Пошел на сервер');
       setIsLoading(true);
       getMoviesCards() // Получаем все карточки с сервера
         .then((moviesData) => {
           sessionStorage.setItem('movies', JSON.stringify(moviesData));
           setMovies(moviesData);
           filterMoviesBySearchQueryAndCheckboxState(moviesData, searchQuery, moviesCheckboxState);
-
         })
         .catch(err => {
-          setErrorFromBack(err.message);
-          console.log(err.message);
+          setErrorFromBack(err.statusText);
+          console.log(err);
         })
         .finally(() => {
           setIsLoading(false)
@@ -288,8 +269,6 @@ function App() {
 
   // Поиск по всем фильмам
   const filterMoviesBySearchQueryAndCheckboxState = (moviesArray, searchQuery, checkboxState) => {
-    console.log('фильтрую. Начальные данные', moviesArray, searchQuery, checkboxState);
-
     localStorage.setItem('searchParams', JSON.stringify({ searchQuery, checkboxState }));
     const filteredByQuery = filterMovieByQuery(moviesArray, searchQuery);
     const filteredByDuration = filterMovieByDuration(filteredByQuery, checkboxState);
@@ -307,13 +286,10 @@ function App() {
 
   // Поиск по сохраненным фильмам
   const handleLocalSearch = (savedMoviesQuery, moviesCheckboxStateSavedMovies) => {
-    // const currentSavedMovie = JSON.parse(sessionStorage.getItem('localSavedMovies'));
     setSavedMoviesQuery(savedMoviesQuery);
-
     localStorage.setItem('localSearchParams', JSON.stringify({ savedMoviesQuery, moviesCheckboxStateSavedMovies }));
     const filteredByQuery = filterMovieByQuery(savedMovies, savedMoviesQuery);
     const filteredByDuration = filterMovieByDuration(filteredByQuery, moviesCheckboxStateSavedMovies);
-
     localStorage.setItem('localSearchResult', JSON.stringify({ filteredByDuration }));
 
     return setfilteredSavedMovies(filteredByDuration);
@@ -355,7 +331,6 @@ function App() {
 
   // Удаляет фильм из сохраненных
   const handleRemoveSavedMovie = (movie) => {
-    console.log('вызвали функцию handleRemoveMovie', movie._id);
     setIsLoading(true);
     mainApi.removeMovie(movie._id)
       .then(() => {
@@ -374,7 +349,6 @@ function App() {
   const handleCheckboxClick = (currentChekboxState) => {
     setMoviesCheckboxState(currentChekboxState);
     if (filteredMoviesToShow) {
-      console.log('1', movies, moviesQuery, currentChekboxState)
       filterMoviesBySearchQueryAndCheckboxState(movies, moviesQuery, currentChekboxState);
     }
   }
@@ -382,9 +356,6 @@ function App() {
   const handleCheckboxClickSavedMovies = (currentChekboxState) => {
     setMoviesCheckboxStateSavedMovies(currentChekboxState);
   }
-
-
-  // initialCountParameters = { showCount: 0, addMoreCount: 0 }
 
   // Пересчитывает массив для отрисовки
   const handleMoreClick = () => {
@@ -395,21 +366,14 @@ function App() {
       setIsMoreButtonShown(false);
     }
 
-    console.log('filteredMoviesToShow', addedMoviesArray);
-
     setFilteredMoviesToShow(addedMoviesArray);
   }
-
-
-
-
 
   return (
     <CurrentUserContext.Provider value={currentUser} >
       <div className="page">
         <div className="container">
           <Header isLoggedIn={isLoggedIn} />
-          {/* {isLoading ? <Preloader /> : */}
           <Switch>
             <Route exact path="/">
               <Main />
@@ -478,8 +442,6 @@ function App() {
               {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
             </Route>
           </Switch>
-          {/* } */}
-
           <Footer />
         </div>
       </div>

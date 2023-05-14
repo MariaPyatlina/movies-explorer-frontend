@@ -7,12 +7,8 @@ function AuthForm(props) {
   const location = useLocation();
   const { values, handleChange, errors, isValid } = useFormWithValidation({});
 
-  console.log('errorFromBack в форме регистрации', props.errorFromBack);
-
-
   const handleSubmitRegister = (evt) => {
     evt.preventDefault();
-    console.log('handleSubmitRegister', values);
     props.onRegister({
       name: values.name,
       email: values.email,
@@ -22,8 +18,6 @@ function AuthForm(props) {
 
   const handleSubmitLogin = (evt) => {
     evt.preventDefault();
-    console.log('handleSubmitLogin', values);
-
     props.onLogin({
       email: values.email,
       password: values.password

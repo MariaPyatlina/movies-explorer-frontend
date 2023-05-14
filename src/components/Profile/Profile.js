@@ -11,17 +11,11 @@ import Preloader from '../Preloader/Preloader';
 
 function Profile(props) {
   const currentUser = React.useContext(CurrentUserContext);
-
+  const [isEditMode, setIsEditMode] = React.useState(false);
   const { values, handleChange, errors, isValid } = useFormWithValidation({
     name: currentUser.name,
     email: currentUser.email,
   });
-
-  const [isEditMode, setIsEditMode] = React.useState(false);
-
-  // ошибка, которая придет с сервера. Возможно, будет пропсом
-  // const [isError, setIsError] = React.useState(false);
-
 
   function handleEditMode() {
     setIsEditMode(true)
@@ -37,8 +31,6 @@ function Profile(props) {
         console.log('rops.errorFromBack', props.errorFromBack);
         if (!err) setIsEditMode(false);
       });
-
-    // if (!props.errorFromBack) setIsEditMode(false);
   }
 
   // Разлогин

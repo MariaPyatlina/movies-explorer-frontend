@@ -1,6 +1,5 @@
 import { INTERNAL_API_URL, EXTERNAL_API_URL } from './constants';
 
-
 export const config = {
   baseUrl: INTERNAL_API_URL,
   headers: { 'Content-Type': 'application/json' },
@@ -23,17 +22,6 @@ class Api {
     }
     else return Promise.reject(res);
   }
-
-  // _parseAnswer(res) {
-  //   if (!res.ok) {
-  //     console.log('28-29', res);
-  //     throw new Error(`my api returned an error ${res.statusText}, ${res.status}`)
-
-  //     // return res.json();
-  //   }
-  //   console.log(res);
-  //   return res.json();
-  // }
 
   //------------КАРТОЧКИ ФИЛЬМОВ--------------------
   //Создает карточку в базе
@@ -89,7 +77,6 @@ class Api {
   }
 
 
-
   //------------ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ--------------------
   //Забирает данные пользователя с сервера
   getUserData() {
@@ -125,7 +112,7 @@ class Api {
       })
     })
       .then(res => this._parseAnswer(res))
-    // .catch(err => console.log(` Это в апи на 118${err.message}`))
+
   }
 
   authorize({ password, email }) {
