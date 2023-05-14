@@ -325,6 +325,7 @@ function App() {
     mainApi.saveMovie(movie)
       .then((newMovie) => {
         setSavedMovies([newMovie, ...savedMovies]);
+        setfilteredSavedMovies([newMovie, ...filteredSavedMovies]);
       })
       .catch(err => {
         setErrorFromBack(err.statusText);
@@ -342,6 +343,7 @@ function App() {
     mainApi.removeMovie(savedMovieForDelete._id)
       .then(() => {
         setSavedMovies(savedMovies => savedMovies.filter(film => film._id !== savedMovieForDelete._id))
+        setfilteredSavedMovies(filteredSavedMovies => filteredSavedMovies.filter(film => film._id !== savedMovieForDelete._id))
       })
       .catch(err => {
         setErrorFromBack(err.statusText);
@@ -358,6 +360,7 @@ function App() {
     mainApi.removeMovie(movie._id)
       .then(() => {
         setSavedMovies(savedMovies => savedMovies.filter(film => film._id !== movie._id))
+        setfilteredSavedMovies(filteredSavedMovies => filteredSavedMovies.filter(film => film._id !== movie._id))
       })
       .catch(err => {
         setErrorFromBack(err.statusText);
