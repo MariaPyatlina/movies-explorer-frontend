@@ -36,7 +36,7 @@ function App() {
   const [initialCountParameters, setInitialCountParameters] = React.useState({ showCount: 0, addMoreCount: 0 });
   const [screenWidth, setScreenWidth] = React.useState(100);
 
-  const [movies, setMovies] = React.useState([]); // Карточки загруженные с внешнего сервера
+  const [movies, setMovies] = React.useState(JSON.parse(sessionStorage.getItem('movies')) || []); // Карточки загруженные с внешнего сервера
   const [moviesLocal, setMoviesLocal] = React.useState([]); // Сохраненные карточки в seesionStorage
   const [fiteredMovies, setFileredMovies] = React.useState(getInitialStateForSearch('searchResult', 'filteredByDuration')); //Массив отфильтрованных фильмов на внешнем сервере
   const [filteredMoviesToShow, setFilteredMoviesToShow] = React.useState(null); // TODO заменить на параметр в зависимости от ширины
@@ -126,9 +126,15 @@ function App() {
     const size = handleResizeCount();
 
     if (fiteredMovies !== null) {
-      setFilteredMoviesToShow(fiteredMovies.slice(0, size.showCount));
-      console.log(initialCountParameters);
+      const moviesToDisplay = fiteredMovies.slice(0, size.showCount);
+
+      setFilteredMoviesToShow(moviesToDisplay);
+
+      if (moviesToDisplay.length !== fiteredMovies.length) {
+        setIsMoreButtonShown(true);
+      }
     }
+
 
 
 
@@ -137,7 +143,7 @@ function App() {
     return () => {
       window.removeEventListener('resize', handleResizeCount);
     }
-  }, [fiteredMovies])
+  }, [])
 
 
   function handleRegister({ password, email, name }) {
@@ -301,11 +307,8 @@ function App() {
 
   // Поиск по сохраненным фильмам
   const handleLocalSearch = (savedMoviesQuery, moviesCheckboxStateSavedMovies) => {
-
-    console.log('первый запуск', savedMoviesQuery, moviesCheckboxStateSavedMovies);
     const currentSavedMovie = JSON.parse(sessionStorage.getItem('localSavedMovies'));
     setSavedMoviesQuery(savedMoviesQuery);
-    console.log('фильтрую. Сохраненные данные данные', currentSavedMovie, savedMoviesQuery, moviesCheckboxStateSavedMovies);
 
     localStorage.setItem('localSearchParams', JSON.stringify({ savedMoviesQuery, moviesCheckboxStateSavedMovies }));
     const filteredByQuery = filterMovieByQuery(currentSavedMovie, savedMoviesQuery);
@@ -367,6 +370,10 @@ function App() {
   // Запомнинает состояние чекбоксов
   const handleCheckboxClick = (currentChekboxState) => {
     setMoviesCheckboxState(currentChekboxState);
+    if (filteredMoviesToShow) {
+      console.log('1', movies, moviesQuery, currentChekboxState)
+      filterMoviesBySearchQueryAndCheckboxState(movies, moviesQuery, currentChekboxState);
+    }
   }
 
   const handleCheckboxClickSavedMovies = (currentChekboxState) => {
@@ -378,10 +385,7 @@ function App() {
 
   // Пересчитывает массив для отрисовки
   const handleMoreClick = () => {
-    console.log('filteredMoviesToShow', filteredMoviesToShow);
     const shownIndex = filteredMoviesToShow.length;
-    console.log('shownIndex', shownIndex);
-
     const addedMoviesArray = fiteredMovies.slice(0, shownIndex + initialCountParameters.addMoreCount);
 
     if (addedMoviesArray.length === fiteredMovies.length) {
