@@ -10,7 +10,7 @@ import Profile from '../Profile/Profile';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
-import Preloader from '../Preloader/Preloader';
+// import Preloader from '../Preloader/Preloader';
 
 import getMoviesCards from '../../utils/moviesApi';
 import mainApi from '../../utils/mainApi';
@@ -209,11 +209,39 @@ function App() {
   }
 
   function handleExit() {
+    // удаляем данные из локального хранилища
     localStorage.removeItem('jwt');
+    localStorage.removeItem('searchParams');
+    localStorage.removeItem('localSearchParams');
+    localStorage.removeItem('searchResult');
+    localStorage.removeItem('localSearchResult');
+    sessionStorage.removeItem('localSavedMovies');
+    sessionStorage.removeItem('movies');
+
+    //Обнуляем все стейт-переменные
+    setMovies([]);
+    setFileredMovies([]);
+    setFilteredMoviesToShow([]);
+    setSavedMovies([]);
+    setfilteredSavedMovies([]);
+    setIsLoading(false);
+    setIsMovieSaved(false);
+    setIsMoreButtonShown(false);
+    setMoviesQuery('');
+    setMoviesCheckboxState(false);
+    setSavedMoviesQuery('');
+    setMoviesCheckboxStateSavedMovies(false);
+    setInitialCountParameters({ showCount: 0, addMoreCount: 0 });
     setIsLoggedIn(false);
-    history.push('/');
+    setErrorFromBack(false);
     setCurrentUser({});
+
+    //Редирект на главную страницу
+    history.push('/');
   }
+
+
+
 
   function handleUpdateUserData({ email, name }) {
     setIsLoading(true);
