@@ -1,3 +1,5 @@
+import { SHORT_FILM_DURATION } from './constants'
+
 export const filterMovieByQuery = (movieArray, query) => {
   let filteredByQueryArray = movieArray.filter((film) => {
     return film.nameRU.toLowerCase().includes(query.toLowerCase()) ||
@@ -10,7 +12,7 @@ export const filterMovieByQuery = (movieArray, query) => {
 export const filterMovieByDuration = (movieArray, checkboxState) => {
   if (checkboxState) {
     let filteredMoviesByDurationArray = movieArray.filter((film) => {
-      return film.duration <= 40;
+      return film.duration <= SHORT_FILM_DURATION;
     })
 
     return filteredMoviesByDurationArray;

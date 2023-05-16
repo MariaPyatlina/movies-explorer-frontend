@@ -21,6 +21,13 @@ import { filterMovieByQuery, filterMovieByDuration } from '../../utils/filterMov
 import CurrentUserContext from '../../contexts/CurrentUserContext.js';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute.js';
 
+const { FILMS_COUNT_FOR_LARGE_SCREEN,
+  FILMS_COUNT_FOR_MIDDLE_SCREEN,
+  FILMS_COUNT_FOR_SMALL_SCREEN,
+  ADD_MORE_FILMS_COUNT_FOR_LARGE_SCREEN,
+  ADD_MORE_FILMS_COUNT_FOR_SMALL_SCREEN,
+} = require('../../utils/constants');
+
 
 function App() {
   const getInitialStateForSearch = (field, key) => {
@@ -80,11 +87,11 @@ function App() {
           console.log(`Ошибка при загрузке данных с сервера ${err}`)
         });
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, movies]);
 
   React.useEffect(() => {
     checkToken();
-  }, []);
+  }, [location]);
 
   React.useEffect(() => {
     setErrorFromBack('');
@@ -97,12 +104,12 @@ function App() {
       const screenWidth = window.innerWidth;
       let size;
       if (screenWidth >= 1280) {
-        size = { showCount: 12, addMoreCount: 3 }
+        size = { showCount: FILMS_COUNT_FOR_LARGE_SCREEN, addMoreCount: ADD_MORE_FILMS_COUNT_FOR_LARGE_SCREEN }
       }
       else if (screenWidth > 480) {
-        size = { showCount: 8, addMoreCount: 2 }
+        size = { showCount: FILMS_COUNT_FOR_MIDDLE_SCREEN, addMoreCount: ADD_MORE_FILMS_COUNT_FOR_SMALL_SCREEN }
       }
-      else { size = { showCount: 5, addMoreCount: 2 } }
+      else { size = { showCount: FILMS_COUNT_FOR_SMALL_SCREEN, addMoreCount: ADD_MORE_FILMS_COUNT_FOR_SMALL_SCREEN } }
 
       setInitialCountParameters(size);
 
@@ -196,8 +203,10 @@ function App() {
       mainApi.checkToken(jwt)
         .then((res) => {
           if (res) {
+            console.log('res', res);
             mainApi.setToken(jwt);
             setIsLoggedIn(true);
+            setCurrentUser(res);
             history.push('/movies');
           }
         })
@@ -222,7 +231,7 @@ function App() {
     setMovies([]);
     setFileredMovies([]);
     setFilteredMoviesToShow([]);
-    setSavedMovies([]);
+    // setSavedMovies([]);
     setfilteredSavedMovies([]);
     setIsLoading(false);
     setIsMovieSaved(false);
@@ -234,10 +243,11 @@ function App() {
     setInitialCountParameters({ showCount: 0, addMoreCount: 0 });
     setIsLoggedIn(false);
     setErrorFromBack(false);
+    history.push('/');
     setCurrentUser({});
 
     //Редирект на главную страницу
-    history.push('/');
+
   }
 
 
@@ -462,12 +472,8 @@ function App() {
               />
             </Route>
 
-            <Route path="/notfound">
-              <NotFoundPage />
-            </Route>
-
             <Route path="*">
-              {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
+              <NotFoundPage />
             </Route>
           </Switch>
           <Footer />
