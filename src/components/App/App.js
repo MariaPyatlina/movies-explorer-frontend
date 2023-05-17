@@ -250,8 +250,6 @@ function App() {
   }
 
 
-
-
   function handleUpdateUserData({ email, name }) {
     setIsLoading(true);
     return mainApi.setUserData({ email, name })
@@ -334,7 +332,6 @@ function App() {
 
   // Сохраняет фильм на сервере
   const handleAddMovieToSave = (movie) => {
-    setIsLoading(true);
     mainApi.saveMovie(movie)
       .then((newMovie) => {
         setSavedMovies([newMovie, ...savedMovies]);
@@ -345,14 +342,12 @@ function App() {
         alert(`При сохранении фильма произошла ошибка ${err.statusText}`);
         console.log(err);
       })
-      .finally(() => setIsLoading(false));
   }
 
   // Удаляет фильм с сервера
   const handleRemovedMovie = (movie) => {
     const savedMovieForDelete = savedMovies.find(savedMovie => savedMovie.movieId === movie.id);
 
-    setIsLoading(true);
     mainApi.removeMovie(savedMovieForDelete._id)
       .then(() => {
         setSavedMovies(savedMovies => savedMovies.filter(film => film._id !== savedMovieForDelete._id))
@@ -363,12 +358,10 @@ function App() {
         alert(`При удалении фильма произошла ошибка ${err.statusText}`);
         console.log(err);
       })
-      .finally(() => setIsLoading(false));
   }
 
   // Удаляет фильм из сохраненных
   const handleRemoveSavedMovie = (movie) => {
-    setIsLoading(true);
     mainApi.removeMovie(movie._id)
       .then(() => {
         setSavedMovies(savedMovies => savedMovies.filter(film => film._id !== movie._id))
@@ -379,7 +372,6 @@ function App() {
         alert(`При удалении фильма произошла ошибка ${err.statusText}`);
         console.log(err);
       })
-      .finally(() => setIsLoading(false));
   }
 
   // Запомнинает состояние чекбоксов
