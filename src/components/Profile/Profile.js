@@ -28,7 +28,6 @@ function Profile(props) {
       name: values.name
     })
       .then((err) => {
-        console.log('rops.errorFromBack', props.errorFromBack);
         if (!err) setIsEditMode(false);
       });
   }

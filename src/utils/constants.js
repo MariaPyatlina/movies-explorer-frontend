@@ -1,6 +1,6 @@
 const EXTERNAL_API_URL = 'https://api.nomoreparties.co';
-// const INTERNAL_API_URL = 'https://api.movies.pyatlina.nomoredomains.work';
-const INTERNAL_API_URL = 'http://localhost:3001';
+const INTERNAL_API_URL = 'https://api.movies.pyatlina.nomoredomains.work';
+// const INTERNAL_API_URL = 'http://localhost:3001';
 
 const SHORT_FILM_DURATION = 40;
 
@@ -13,7 +13,6 @@ const ADD_MORE_FILMS_COUNT_FOR_SMALL_SCREEN = 2;
 
 module.exports = {
   EXTERNAL_API_URL,
-  // export const INTERNAL_API_URL,
   INTERNAL_API_URL,
   SHORT_FILM_DURATION,
   FILMS_COUNT_FOR_LARGE_SCREEN,

@@ -10,7 +10,6 @@ import Profile from '../Profile/Profile';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
-// import Preloader from '../Preloader/Preloader';
 
 import getMoviesCards from '../../utils/moviesApi';
 import mainApi from '../../utils/mainApi';
@@ -235,9 +234,7 @@ function App() {
     // удаляем данные из локального хранилища
     localStorage.removeItem('jwt');
     localStorage.removeItem('searchParams');
-    localStorage.removeItem('localSearchParams');
     localStorage.removeItem('searchResult');
-    localStorage.removeItem('localSearchResult');
     sessionStorage.removeItem('localSavedMovies');
     sessionStorage.removeItem('movies');
 
@@ -245,7 +242,6 @@ function App() {
     setMovies([]);
     setFileredMovies([]);
     setFilteredMoviesToShow(null);
-    // setSavedMovies([]);
     setfilteredSavedMovies(null);
     setIsLoading(false);
     setIsMovieSaved(false);
@@ -258,11 +254,7 @@ function App() {
     setErrorFromBack(false);
     history.push('/');
     setCurrentUser({});
-
-    //Редирект на главную страницу
-
   }
-
 
   function handleUpdateUserData({ email, name }) {
     setIsLoading(true);
@@ -436,7 +428,6 @@ function App() {
                 isMoreButtonShown={isMoreButtonShown}
               />
             </Route>
-
 
             <Route path="/saved-movies">
               <ProtectedRoute
