@@ -91,7 +91,7 @@ function App() {
 
   React.useEffect(() => {
     checkToken();
-  }, [location]);
+  }, []);
 
   React.useEffect(() => {
     setErrorFromBack('');
@@ -203,11 +203,10 @@ function App() {
       mainApi.checkToken(jwt)
         .then((res) => {
           if (res) {
-            console.log('res', res);
             mainApi.setToken(jwt);
             setIsLoggedIn(true);
             setCurrentUser(res);
-            history.push('/movies');
+            // history.push('/movies');
           }
         })
         .catch(err => {
@@ -417,44 +416,53 @@ function App() {
               <Main />
             </Route>
 
-            <ProtectedRoute path="/movies"
-              isLoggedIn={isLoggedIn}
-              component={Movies}
-              movies={filteredMoviesToShow}
-              savedMovies={savedMovies} // Массив сохраненных фильмов
-              isMovieSaved={isMovieSaved}
-              onAddMovie={handleAddMovieToSave}
-              onRemoveMovie={handleRemovedMovie}
-              moviesQuery={moviesQuery}
-              onSearchSubmit={handleSearchMovies}
-              moviesCheckboxState={moviesCheckboxState}
-              onCheckboxClick={handleCheckboxClick}
-              errorFromBack={errorFromBack}
-              isLoading={isLoading}
-              onMoreClick={handleMoreClick}
-              isMoreButtonShown={isMoreButtonShown}
-            />
+            <Route path="/movies">
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={Movies}
+                movies={filteredMoviesToShow}
+                savedMovies={savedMovies} // Массив сохраненных фильмов
+                isMovieSaved={isMovieSaved}
+                onAddMovie={handleAddMovieToSave}
+                onRemoveMovie={handleRemovedMovie}
+                moviesQuery={moviesQuery}
+                onSearchSubmit={handleSearchMovies}
+                moviesCheckboxState={moviesCheckboxState}
+                onCheckboxClick={handleCheckboxClick}
+                errorFromBack={errorFromBack}
+                isLoading={isLoading}
+                onMoreClick={handleMoreClick}
+                isMoreButtonShown={isMoreButtonShown}
+              />
+            </Route>
 
-            <ProtectedRoute path="/saved-movies"
-              isLoggedIn={isLoggedIn}
-              component={SavedMovies}
-              savedMovies={filteredSavedMovies}  // Отфильтрованые Сохраненные фильмы
-              onRemoveSavedMovie={handleRemoveSavedMovie} // удаление из избранного
-              moviesQuery={savedMoviesQuery} // поисковый запрос
-              onSearchSubmit={handleLocalSearch} // действие по кнопке Сабмит
-              moviesCheckboxState={moviesCheckboxStateSavedMovies} // состояние чекбокса
-              onCheckboxClick={handleCheckboxClickSavedMovies} // клик по чекбоксу
-              isLoading={isLoading}
-            />
 
-            <ProtectedRoute path="/profile"
-              isLoggedIn={isLoggedIn}
-              component={Profile}
-              onExit={handleExit}
-              onProfileUpdate={handleUpdateUserData}
-              errorFromBack={errorFromBack}
-              isLoading={isLoading}
-            />
+            <Route path="/saved-movies">
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={SavedMovies}
+                savedMovies={filteredSavedMovies}  // Отфильтрованые Сохраненные фильмы
+                onRemoveSavedMovie={handleRemoveSavedMovie} // удаление из избранного
+                moviesQuery={savedMoviesQuery} // поисковый запрос
+                onSearchSubmit={handleLocalSearch} // действие по кнопке Сабмит
+                moviesCheckboxState={moviesCheckboxStateSavedMovies} // состояние чекбокса
+                onCheckboxClick={handleCheckboxClickSavedMovies} // клик по чекбоксу
+                isLoading={isLoading}
+              />
+            </Route>
+
+            <Route path="/profile">
+              <ProtectedRoute
+                isLoggedIn={isLoggedIn}
+                component={Profile}
+                onExit={handleExit}
+                onProfileUpdate={handleUpdateUserData}
+                errorFromBack={errorFromBack}
+                isLoading={isLoading}
+                checkToken={checkToken}
+              />
+            </Route>
+
 
             <Route path="/signin">
               <Login
