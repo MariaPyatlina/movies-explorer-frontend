@@ -7,12 +7,12 @@ function MoviesCard(props) {
   const location = useLocation();
 
   // Добавлена ли карточка в сохранённые ?
-  const isMovieSaved = props.savedMovies.some(movie => movie.movieId === props.movie.id);
+  const isMovieSaved = (props.savedMovies || []).some(movie => movie.movieId === props.movie.id);
 
   function handleAddMovie(evt) {
     evt.preventDefault();
 
-    const isMovieAlradySaved = props.savedMovies.find(savedMovie => savedMovie.movieId === props.movie.id);
+    const isMovieAlradySaved = (props.savedMovies || []).find(savedMovie => savedMovie.movieId === props.movie.id);
 
     if (isMovieAlradySaved === undefined) {
       props.onAddMovie(props.movie);

@@ -21,12 +21,13 @@ import { filterMovieByQuery, filterMovieByDuration } from '../../utils/filterMov
 import CurrentUserContext from '../../contexts/CurrentUserContext.js';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute.js';
 
-import  { FILMS_COUNT_FOR_LARGE_SCREEN,
+import {
+  FILMS_COUNT_FOR_LARGE_SCREEN,
   FILMS_COUNT_FOR_MIDDLE_SCREEN,
   FILMS_COUNT_FOR_SMALL_SCREEN,
   ADD_MORE_FILMS_COUNT_FOR_LARGE_SCREEN,
   ADD_MORE_FILMS_COUNT_FOR_SMALL_SCREEN,
-}  from '../../utils/constants';
+} from '../../utils/constants';
 
 
 function App() {
@@ -43,10 +44,10 @@ function App() {
 
   const [movies, setMovies] = React.useState(JSON.parse(sessionStorage.getItem('movies')) || []); // Карточки загруженные с внешнего сервера
   const [fiteredMovies, setFileredMovies] = React.useState(getInitialStateForSearch('searchResult', 'filteredByDuration')); //Массив отфильтрованных фильмов на внешнем сервере
-  const [filteredMoviesToShow, setFilteredMoviesToShow] = React.useState(null); // TODO заменить на параметр в зависимости от ширины
+  const [filteredMoviesToShow, setFilteredMoviesToShow] = React.useState(null);
 
   const [savedMovies, setSavedMovies] = React.useState([]); // Фильмы. которые сохранены на внутреннем сервере
-  const [filteredSavedMovies, setfilteredSavedMovies] = React.useState(getInitialStateForSearch('localSearchResult', 'filteredByDuration')); // Фильмы. которые отфильтровал на внутреннем сервере
+  const [filteredSavedMovies, setfilteredSavedMovies] = React.useState(null); // Фильмы. которые отфильтровал на внутреннем сервере
 
   const [isLoading, setIsLoading] = React.useState(false); // Чтобы показывать прелоадер на время загрузки
   const [isMovieSaved, setIsMovieSaved] = React.useState(false);
@@ -56,11 +57,11 @@ function App() {
   const [moviesQuery, setMoviesQuery] = React.useState(getInitialStateForSearch('searchParams', 'searchQuery') || '');
   const [moviesCheckboxState, setMoviesCheckboxState] = React.useState(getInitialStateForSearch('searchParams', 'checkboxState') || false);
 
-  const [savedMoviesQuery, setSavedMoviesQuery] = React.useState(getInitialStateForSearch('localSearchParams', 'savedMoviesQuery') || '');
-  const [moviesCheckboxStateSavedMovies, setMoviesCheckboxStateSavedMovies] = React.useState(getInitialStateForSearch('localSearchParams', 'moviesCheckboxStateSavedMovies') || false);
+  const [savedMoviesQuery, setSavedMoviesQuery] = React.useState('');
+  const [moviesCheckboxStateSavedMovies, setMoviesCheckboxStateSavedMovies] = React.useState(false);
 
   // Регистрация и авторизация
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false); // Авторизован
+  const [isLoggedIn, setIsLoggedIn] = React.useState(null); // Авторизован
   const [errorFromBack, setErrorFromBack] = React.useState('');
 
   const history = useHistory();
@@ -72,8 +73,9 @@ function App() {
       Promise.all([mainApi.getUserData(), mainApi.getAllSavedMovies()])
         .then(([userData, savedMoviesData]) => {
           setCurrentUser(userData);
-          if (!savedMoviesQuery && !moviesCheckboxStateSavedMovies) {
-            setfilteredSavedMovies(savedMoviesData.data)
+
+          if (savedMoviesData.data.length === 0) {
+            savedMoviesData.data = null
           }
           setSavedMovies(savedMoviesData.data);
           sessionStorage.setItem('localSavedMovies', JSON.stringify(savedMoviesData.data));
@@ -87,7 +89,7 @@ function App() {
           console.log(`Ошибка при загрузке данных с сервера ${err}`)
         });
     }
-  }, [isLoggedIn, movies]);
+  }, [isLoggedIn]);
 
   React.useEffect(() => {
     checkToken();
@@ -97,15 +99,20 @@ function App() {
     setErrorFromBack('');
   }, [location]);
 
+  React.useEffect(() => {
+    if (savedMovies) {
+      handleLocalSearch('', false);
+    }
+  }, [location]);
 
   React.useEffect(() => {
 
     const handleResizeCount = () => {
       const screenWidth = window.innerWidth;
-  
+
       let size;
       if (screenWidth >= 1280) {
-  
+
         size = { showCount: FILMS_COUNT_FOR_LARGE_SCREEN, addMoreCount: ADD_MORE_FILMS_COUNT_FOR_LARGE_SCREEN }
       }
       else if (screenWidth > 480) {
@@ -208,13 +215,19 @@ function App() {
             mainApi.setToken(jwt);
             setIsLoggedIn(true);
             setCurrentUser(res);
-            // history.push('/movies');
+          }
+          else {
+            setIsLoggedIn(false);
           }
         })
         .catch(err => {
+          setIsLoggedIn(false);
           setErrorFromBack(err.statusText);
           console.log(`Ошибка ${err}`);
         });
+    }
+    else {
+      setIsLoggedIn(false);
     }
   }
 
@@ -231,9 +244,9 @@ function App() {
     //Обнуляем все стейт-переменные
     setMovies([]);
     setFileredMovies([]);
-    setFilteredMoviesToShow([]);
+    setFilteredMoviesToShow(null);
     // setSavedMovies([]);
-    setfilteredSavedMovies([]);
+    setfilteredSavedMovies(null);
     setIsLoading(false);
     setIsMovieSaved(false);
     setIsMoreButtonShown(false);
@@ -241,8 +254,7 @@ function App() {
     setMoviesCheckboxState(false);
     setSavedMoviesQuery('');
     setMoviesCheckboxStateSavedMovies(false);
-    setInitialCountParameters({ showCount: 0, addMoreCount: 0 });
-    setIsLoggedIn(false);
+    setIsLoggedIn(null);
     setErrorFromBack(false);
     history.push('/');
     setCurrentUser({});
@@ -323,11 +335,8 @@ function App() {
 
   // Поиск по сохраненным фильмам
   const handleLocalSearch = (savedMoviesQuery, moviesCheckboxStateSavedMovies) => {
-    setSavedMoviesQuery(savedMoviesQuery);
-    localStorage.setItem('localSearchParams', JSON.stringify({ savedMoviesQuery, moviesCheckboxStateSavedMovies }));
     const filteredByQuery = filterMovieByQuery(savedMovies, savedMoviesQuery);
     const filteredByDuration = filterMovieByDuration(filteredByQuery, moviesCheckboxStateSavedMovies);
-    localStorage.setItem('localSearchResult', JSON.stringify({ filteredByDuration }));
 
     return setfilteredSavedMovies(filteredByDuration);
   }
@@ -336,8 +345,7 @@ function App() {
   const handleAddMovieToSave = (movie) => {
     mainApi.saveMovie(movie)
       .then((newMovie) => {
-        setSavedMovies([newMovie, ...savedMovies]);
-        setfilteredSavedMovies([newMovie, ...filteredSavedMovies]);
+        setSavedMovies([newMovie, ...savedMovies || []]);
       })
       .catch(err => {
         setErrorFromBack(err.statusText);
@@ -353,7 +361,6 @@ function App() {
     mainApi.removeMovie(savedMovieForDelete._id)
       .then(() => {
         setSavedMovies(savedMovies => savedMovies.filter(film => film._id !== savedMovieForDelete._id))
-        setfilteredSavedMovies(filteredSavedMovies => filteredSavedMovies.filter(film => film._id !== savedMovieForDelete._id))
       })
       .catch(err => {
         setErrorFromBack(err.statusText);
@@ -460,6 +467,7 @@ function App() {
 
             <Route path="/signin">
               <Login
+                isLoggedIn={isLoggedIn}
                 onLogin={handleLogin}
                 errorFromBack={errorFromBack}
                 isLoading={isLoading}
@@ -468,6 +476,7 @@ function App() {
 
             <Route path="/signup">
               <Register
+                isLoggedIn={isLoggedIn}
                 onRegister={handleRegister}
                 errorFromBack={errorFromBack}
                 isLoading={isLoading}
