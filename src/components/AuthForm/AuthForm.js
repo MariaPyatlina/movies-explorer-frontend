@@ -53,7 +53,7 @@ function AuthForm(props) {
         type="email"
         name="email"
         required
-        pattern="[A-Za-z0-9_-]+@[A-Za-z0-9_-]+\.[A-Za-z0-9_-]{2}"
+        pattern="[A-Za-z0-9_-]+@[A-Za-z0-9_-]+\.[A-Za-z0-9_-]{2,}"
         value={values.email || ''}
         onChange={handleChange}
       />
