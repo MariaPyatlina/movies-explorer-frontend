@@ -1,17 +1,48 @@
 import React from "react";
 import './Movies';
-import Header from '../Header/Header';
 import SearchBlock from '../SearchBlock/SearchBlock';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
-import Footer from "../Footer/Footer";
+import Preloader from '../Preloader/Preloader';
 
-function Movies() {
-    return (
-        <>
-            <SearchBlock />
-            <MoviesCardList />
-        </>
-    )
+function Movies(props) {
+
+  const handleMoreClick = (evt) => {
+    evt.preventDefault();
+    props.onMoreClick(props.movies);
+  }
+
+  return (
+    <>
+      <SearchBlock
+        moviesQuery={props.moviesQuery}
+        onSearchSubmit={props.onSearchSubmit}
+        moviesCheckboxState={props.moviesCheckboxState}
+        onCheckboxClick={props.onCheckboxClick}
+      />
+      {props.isLoading ?
+        <Preloader /> :
+        <MoviesCardList
+          movies={props.movies}
+          savedMovies={props.savedMovies}
+          onAddMovie={props.onAddMovie}
+          onRemoveMovie={props.onRemoveMovie}
+          onRemoveSavedMovie={props.onRemoveSavedMovie}
+          isLoading={props.isLoading}
+        />}
+
+
+      {props.isMoreButtonShown && (
+        <button
+          className={`movies-cards__button-more `}
+          type="button"
+          onClick={handleMoreClick}
+        >
+          Ещё
+        </button>
+      )}
+    </>
+
+  )
 }
 
 export default Movies;

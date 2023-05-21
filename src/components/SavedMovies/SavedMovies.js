@@ -2,13 +2,21 @@ import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import SearchBlock from '../SearchBlock/SearchBlock';
 import './SavedMovies.css';
 
-function SavedMovies() {
-    return (
-        <>
-            <SearchBlock />
-            <MoviesCardList />
-        </>
-    );
+function SavedMovies(props) {
+  return (
+    <>
+      <SearchBlock
+        moviesQuery={props.moviesQuery}
+        onSearchSubmit={props.onSearchSubmit}
+        moviesCheckboxState={props.moviesCheckboxState}
+        onCheckboxClick={props.onCheckboxClick}
+      />
+      <MoviesCardList
+        savedMovies={props.savedMovies}
+        onRemoveSavedMovie={props.onRemoveSavedMovie}
+      />
+    </>
+  );
 }
 
 export default SavedMovies;

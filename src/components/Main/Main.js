@@ -5,16 +5,16 @@ import Techs from '../Techs/Techs';
 import AboutMe from '../AboutMe/AboutMe';
 import NavTab from "../NavTab/NavTab";
 
-function Main() {
-    return (
-        <main className="content">
-            <Promo />
-            <NavTab />
-            <AboutProject />
-            <Techs />
-            <AboutMe />
-        </main>
-    );
+function Main(props) {
+  return (
+    <main className="content">
+      <Promo />
+      <NavTab />
+      <AboutProject />
+      <Techs />
+      <AboutMe />
+    </main>
+  );
 }
 
 export default Main;
